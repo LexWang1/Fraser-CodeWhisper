@@ -1,0 +1,25 @@
+{
+  "name": "fraser-codewhisper",
+  "version": "1.0.0",
+  "description": "We are CodeWhisper.\r This is a financial software based on B/S structure, which is written in Javascript and run on  Node.js server.",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start":"node app.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LexWang1/Fraser-CodeWhisper.git"
+  },
+  "keywords": [
+    "financial",
+    "portfolio"
+  ],
+  "author": "CodeWhisper",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LexWang1/Fraser-CodeWhisper/issues"
+  },
+  "homepage": "https://github.com/LexWang1/Fraser-CodeWhisper#readme"
+}
