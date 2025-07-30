@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const pool = mysql.createPool({
-    host: 'localhost', user: 'root', password: 'qwe123rty', database: 'financial_data',
+    host: 'localhost', user: 'root', password: 'SUPERljy@981002', database: 'financial_data',
     waitForConnections: true, connectionLimit: 10, queueLimit: 0
 });
 

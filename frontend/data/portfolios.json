@@ -1,0 +1,221 @@
+{
+  "portfolios": [
+    {
+      "id": "default",
+      "name": "default",
+      "createdAt": "2025-01-01T00:00:00Z",
+      "holdings": [
+        {
+          "stockId": "NVDA",
+          "assetName": "Nvidia",
+          "assetType": "stock",
+          "quantity": 50,
+          "averageCost": 240.00,
+          "currentPrice": 250.00,
+          "changePercent": -1.25,
+          "priceHistory": [260, 255, 258, 252, 248, 251, 250],
+          "news": [
+            { "title": "Nvidia Unveils New AI Chip, Stock Jumps", "source": "Bloomberg", "date": "1 day ago" },
+            { "title": "Gaming Division Sees Record Growth for Nvidia", "source": "Reuters", "date": "3 days ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 240.00, "quantity": 100, "timestamp": "2025-06-20T10:00:00Z" },
+            { "type": "sell", "price": 265.50, "quantity": 50, "timestamp": "2025-06-22T14:00:00Z" }
+          ]
+        },
+        {
+          "stockId": "TSLA",
+          "assetName": "Tesla",
+          "assetType": "stock",
+          "quantity": 2500,
+          "averageCost": 199.86,
+          "currentPrice": 245.50,
+          "changePercent": 0.17,
+          "priceHistory": [240, 242, 238, 245, 243, 246, 245.5],
+          "news": [
+            { "title": "Tesla Delivers Record Number of Vehicles in Q2", "source": "Financial Times", "date": "2 hours ago" },
+            { "title": "Analyst Downgrades Tesla on Competition Concerns", "source": "CNBC", "date": "1 day ago" },
+            { "title": "Elon Musk Discusses Future of Full Self-Driving", "source": "The Verge", "date": "2 days ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 195.80, "quantity": 3000, "timestamp": "2025-06-20T14:15:00Z" },
+            { "type": "sell", "price": 245.50, "quantity": 500, "timestamp": "2025-06-22T09:30:00Z" },
+            { "type": "buy", "price": 250.00, "quantity": 200, "timestamp": "2025-06-23T12:00:00Z" },
+            { "type": "buy", "price": 200.00, "quantity": 1000, "timestamp": "2025-06-24T12:00:00Z" },
+            { "type": "sell", "price": 231.70, "quantity": 1200, "timestamp": "2025-06-25T12:00:00Z" }
+          ]
+        },
+        {
+          "stockId": "HSBC",
+          "assetName": "HSBC",
+          "assetType": "stock",
+          "quantity": 1000,
+          "averageCost": 190.00,
+          "currentPrice": 195.80,
+          "changePercent": 0.88,
+          "priceHistory": [190, 191, 194, 192, 195, 196, 195.8],
+          "news": [
+            { "title": "HSBC Reports Strong Earnings from Asia Markets", "source": "Wall Street Journal", "date": "5 hours ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 190.00, "quantity": 1000, "timestamp": "2025-06-18T11:30:00Z" }
+          ]
+        },
+        {
+          "stockId": "MSFT",
+          "assetName": "Microsoft",
+          "assetType": "stock",
+          "quantity": 200,
+          "averageCost": 330.00,
+          "currentPrice": 350.10,
+          "changePercent": 1.05,
+          "priceHistory": [340, 345, 342, 348, 347, 349, 350.1],
+          "news": [
+            { "title": "Microsoft Closes Major Acquisition Deal", "source": "TechCrunch", "date": "4 hours ago" },
+            { "title": "Azure Cloud Growth Continues to Impress Investors", "source": "Reuters", "date": "2 days ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 330.00, "quantity": 200, "timestamp": "2025-05-10T09:45:00Z" }
+          ]
+        },
+        {
+          "stockId": "GOOGL",
+          "assetName": "Google",
+          "assetType": "stock",
+          "quantity": -100,
+          "averageCost": null,
+          "currentPrice": 140.22,
+          "changePercent": -0.50,
+          "priceHistory": [142, 141, 143, 139, 140, 141, 140.22],
+          "news": [
+            { "title": "Google Announces Advancements in Quantum Computing", "source": "Wired", "date": "1 day ago" }
+          ],
+          "transactions": [
+            { "type": "sell", "price": 145.00, "quantity": 100, "timestamp": "2025-06-15T15:00:00Z" }
+          ]
+        },
+        {
+          "stockId": "SPY",
+          "assetName": "SPDR S&P 500 ETF",
+          "assetType": "etf",
+          "quantity": 1000,
+          "averageCost": 350.00,
+          "currentPrice": 380.00,
+          "changePercent": 0.55,
+          "priceHistory": [375, 377, 376, 379, 381, 378, 380],
+          "news": [
+            { "title": "Fed Meeting Minutes Signal Potential Rate Pause", "source": "Reuters", "date": "6 hours ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 350.00, "quantity": 1000, "timestamp": "2025-01-15T10:30:00Z" }
+          ]
+        },
+        {
+          "stockId": "QQQ",
+          "assetName": "Invesco QQQ Trust",
+          "assetType": "etf",
+          "quantity": 1000,
+          "averageCost": 180.00,
+          "currentPrice": 200.00,
+          "changePercent": 0.82,
+          "priceHistory": [195, 196, 198, 197, 199, 198, 200],
+          "news": [
+            { "title": "Tech Sector Leads Market Rally on Strong Earnings", "source": "Bloomberg", "date": "1 day ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 180.00, "quantity": 1000, "timestamp": "2025-02-20T11:00:00Z" }
+          ]
+        },
+        {
+          "stockId": "GLD",
+          "assetName": "SPDR Gold Shares",
+          "assetType": "etf",
+          "quantity": 1000,
+          "averageCost": 170.00,
+          "currentPrice": 175.00,
+          "changePercent": -0.11,
+          "priceHistory": [176, 175.5, 175.8, 174.9, 175.2, 175.1, 175],
+          "news": [
+            { "title": "Gold Prices Dip as Dollar Strengthens", "source": "Kitco News", "date": "3 hours ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 170.00, "quantity": 1000, "timestamp": "2025-03-10T14:00:00Z" }
+          ]
+        },
+        {
+          "stockId": "AGG",
+          "assetName": "iShares Core U.S. Aggregate Bond ETF",
+          "assetType": "etf",
+          "quantity": 1000,
+          "averageCost": 148.50,
+          "currentPrice": 150.00,
+          "changePercent": 0.05,
+          "priceHistory": [149.8, 149.9, 150.1, 150.0, 149.9, 150.0, 150.0],
+          "news": [
+            { "title": "Bond Yields Stabilize Ahead of Inflation Data", "source": "Wall Street Journal", "date": "8 hours ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 148.50, "quantity": 1000, "timestamp": "2025-04-05T09:30:00Z" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "newone",
+      "name": "newone",
+      "createdAt": "2025-01-01T00:00:00Z",
+      "holdings": [
+        {
+          "stockId": "JPY",
+          "assetName": "Japanese Yen",
+          "assetType": "forex",
+          "quantity": 1000000,
+          "averageCost": 0.007407,
+          "currentPrice": 0.007142,
+          "changePercent": -0.25,
+          "priceHistory": [0.007246, 0.007194, 0.00722, 0.007142, 0.007092, 0.007117, 0.007142],
+          "news": [
+            { "title": "Bank of Japan maintains ultra-low interest rates", "source": "Nikkei Asia", "date": "4 hours ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 0.007407, "quantity": 1000000, "timestamp": "2025-06-01T18:00:00Z" }
+          ]
+        },
+        {
+          "stockId": "CNY",
+          "assetName": "Chinese Yuan",
+          "assetType": "forex",
+          "quantity": 50000,
+          "averageCost": 0.147058,
+          "currentPrice": 0.153846,
+          "changePercent": 0.10,
+          "priceHistory": [0.15267, 0.1529, 0.15337, 0.1536, 0.1531, 0.154, 0.153846],
+          "news": [
+            { "title": "China's Central Bank Pledges FX Market Stability", "source": "Reuters", "date": "1 day ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 0.147058, "quantity": 50000, "timestamp": "2025-05-20T12:00:00Z" }
+          ]
+        },
+        {
+          "stockId": "BTC",
+          "assetName": "Bitcoin",
+          "assetType": "crypto",
+          "quantity": 2.5,
+          "averageCost": 30800.00,
+          "currentPrice": 40000.00,
+          "changePercent": 4.58,
+          "priceHistory": [38500, 39000, 41000, 39500, 40500, 39800, 40000],
+          "news": [
+            { "title": "Major Investment Firm Files for Spot Bitcoin ETF", "source": "CoinDesk", "date": "9 hours ago" },
+            { "title": "Bitcoin Halving Event Approaches, Speculation Rises", "source": "Decrypt", "date": "3 days ago" }
+          ],
+          "transactions": [
+            { "type": "buy", "price": 28000.00, "quantity": 1.5, "timestamp": "2025-02-02T20:00:00Z" },
+            { "type": "buy", "price": 35000.00, "quantity": 1.0, "timestamp": "2025-04-11T22:30:00Z" }
+          ]
+        }
+      ]
+    }
+  ]
+}
