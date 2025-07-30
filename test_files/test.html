@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axios HTML Fetch & Display</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Fetch & Display HTML</h1>
+    <button onclick="fetchAndDisplayHTML()">Fetch HTML</button>
+    <div id="resultContainer" style="border: 1px solid #ccc; padding: 10px; margin-top: 10px;"></div>
+    <script>
+        async function fetchAndDisplayHTML() {
+            const container = document.getElementById('resultContainer');
+            container.innerHTML = "<p>Loading...</p>";
+
+            try {
+                // Example: Fetch a public HTML page (replace with your target URL)
+                let key_word = 'apple';
+                axios.get(`https://www.baidu.com/s?wd=${key_word}`, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                    },
+                  })
+                  .then(response=>{
+                    // console.log(response);
+                    return response.data;
+                  })
+                  .then(data=>{
+                    console.log(data);
+                    // Insert the fetched HTML into the div (scripts may not execute due to CORS)
+                    container.innerHTML = data;
+                    
+                  });  
+
+                
+            } catch (error) {
+                container.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

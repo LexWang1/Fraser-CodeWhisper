@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start":"node app.js",
+    "start": "node app.js",
     "test": "jest"
   },
   "repository": {
@@ -21,5 +21,11 @@
   "bugs": {
     "url": "https://github.com/LexWang1/Fraser-CodeWhisper/issues"
   },
-  "homepage": "https://github.com/LexWang1/Fraser-CodeWhisper#readme"
+  "homepage": "https://github.com/LexWang1/Fraser-CodeWhisper#readme",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "sequelize": "^6.37.7"
+  }
 }

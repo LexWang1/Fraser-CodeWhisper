@@ -82,13 +82,15 @@
                 <div class="net-worth-title">NET WORTH</div>
                 <div class="net-worth-amount" id="total">$2,317,371.20</div>
             </div>
+            <div class="container">hi</div>
             <div class="section">
                 <div class="section-title" onclick="toggleSection('cash')">CASH</div>
                 <div class="section-content" id="cash-content">
                     <div class="account-item">
-                        <div><div class="account-name"><b>USD</b></div></div>
+                        <div><div class="account-name">USD</div></div>
                         <div class="account-amount" id="usd"></div>
                     </div>
+                    <!-- <div>hi</div> -->
                     <div class="account-item clickable" onclick="showAsset('forex', 'JPY')">
                         <div>
                             <div class="account-name">JPY</div>
@@ -102,9 +104,33 @@
                             <div class="account-details">Chinese Yuan</div>
                         </div>
                         <div class="account-amount" id="cny-holding-value"></div>
+                        <!-- <div id="12321">test</div> -->
                     </div>
                 </div>
             </div>
+            
+            <!-- <script>
+              let count = 0;
+              let interval_1;
+              function startCounter() {
+                interval_1 = setInterval(() => {
+                  count++; // Update variable
+                  document.getElementById('12321').textContent = count; // Update DOM
+                  }, 1000); // Update every 1 second
+                }
+
+            //    const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
+            //    if (element) {
+            //        element.textContent = `$${holdingValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            //    }
+
+              function stopCounter() {
+                  clearInterval(interval_1);
+              }
+              // Start the counter when the page loads
+              startCounter();
+
+            </script> -->
 
             <div class="section">
                 <div class="section-title" onclick="toggleSection('stock')">STOCK</div>
