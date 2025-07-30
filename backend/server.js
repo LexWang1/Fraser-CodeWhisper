@@ -56,6 +56,6 @@ app.listen(port, () => {
     console.log("-----------------------------------------------------");
     console.log("请注意：查询参数已从 'type' 变更为 'asset_type'!");
     console.log("新闻接口示例: http://localhost:3000/api/news?asset_type=Stock&symbol=TSLA");
-    console.log("价格接口示例: http://localhost:3000/api/asset_price?asset_type=Crypto&name=bitcoin&date=2023-10-27");
+    console.log("价格接口示例: http://localhost:3000/api/asset_price?asset_type=Crypto&name=bitcoin&date=2025-6-27");
     console.log("-----------------------------------------------------");
 });

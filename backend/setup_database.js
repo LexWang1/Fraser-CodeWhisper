@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
 
-const dbConfig = { host: 'localhost', user: 'root', password: 'YourPassword' };
+const dbConfig = { host: 'localhost', user: 'root', password: 'qwe123rty' };
 const dbName = 'financial_data';
 const newsCsvPath = path.join(__dirname, '..', 'data', 'financial_news.csv');
 const priceCsvPath = path.join(__dirname, '..', 'data', 'asset_price.csv');
