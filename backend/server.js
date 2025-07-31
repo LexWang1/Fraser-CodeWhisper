@@ -96,8 +96,7 @@ app.get('/currentCrypto/:ticket',(req,res)=>{
       .then(response => {
         console.log(`Crypto ${Symbol} Price:`, response.data["prices"][0][1]);
         res.send(response.data["prices"][0][1]);
-      }).catch(error =>{console.log("test:", Symbol);}
-        
+      }).catch(error =>{console.log("Error debug:", Symbol);}
       );
 });
 
@@ -119,6 +118,25 @@ app.get('/currentExchange/:ticket',(req,res)=>{
 });
 
 
+//股指请求
+app.get('/currentIndex/:ticket',(req,res)=>{
+    // console.log("received index api request")
+    let symbol = req.params.ticket;
+    const interval = '1m'; // 1 day     1m 1d 1mo 1y 
+    const range = '1m'; // 1 month   1m 1d 1mo 1y 
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
+
+    axios.get(url)   //必须用axios.get
+    .then(response => {
+      console.log('Index Price now:', response.data.chart.result[0].indicators.quote[0]["close"][0]);
+      res.send(response.data.chart.result[0].indicators.quote[0]["close"][0]);
+    })
+    .catch(error => {
+      console.error(' Index Error');
+    });
+});
+
+
 app.listen(port, () => {
     console.log(`数据接口服务已启动，正在监听 http://localhost:${port}`);
     // console.log("-----------------------------------------------------");
@@ -127,3 +145,4 @@ app.listen(port, () => {
     // console.log("价格接口示例: http://localhost:3000/api/asset_price?asset_type=Crypto&name=bitcoin&date=2025-6-27");
     // console.log("-----------------------------------------------------");
 });
+
