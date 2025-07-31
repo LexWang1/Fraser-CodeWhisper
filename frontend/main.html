@@ -61,20 +61,54 @@
     </div>
   </nav>
 
-  <!-- Add Portfolio Modal -->
-  <div id="addPortfolioModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <h3>Add New Portfolio</h3>
-      <form id="addPortfolioForm">
-        <label for="portfolioName">Portfolio Name:</label>
-        <input type="text" id="portfolioName" required>
-        <label for="portfolioValue">Initial Value:</label>
-        <input type="number" id="portfolioValue" required>
-        <button type="submit" class="submit-btn">Add Portfolio</button>
-      </form>
-    </div>
+
+<!-- Add Portfolio Modal -->
+<div id="addPortfolioModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h3>Add New Portfolio</h3>
+    <form id="addPortfolioForm">
+      <!-- Portfolio Name -->
+      <label for="portfolioName">Portfolio Name:</label>
+      <input type="text" id="portfolioName" required>
+
+      <!-- Initial Value -->
+      <label for="portfolioValue">Initial Value:</label>
+      <input type="number" id="portfolioValue" required>
+
+      <!-- Asset Type -->
+      <label for="assetType">Asset Type:</label>
+      <select id="assetType" required>
+        <option value="">Select Type</option>
+        <option value="Currency">Currency</option>
+        <option value="Stock">Stock</option>
+        <option value="Bond">Bond</option>
+        <option value="Fund">Fund</option>
+        <option value="Crypto">Crypto</option>
+      </select>
+
+      <!-- Transaction Type -->
+      <label for="transactionType">Transaction Type:</label>
+      <select id="transactionType" required>
+        <option value="">Select Transaction</option>
+        <option value="Buy">Buy In</option>
+        <option value="Sell">Sell Out</option>
+        <option value="Dividend">Dividend</option>
+      </select>
+
+      <!-- Date -->
+      <label for="transactionDate">Transaction Date:</label>
+      <input type="date" id="transactionDate" required>
+
+      <!-- Quantity -->
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" step="0.01" required>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn">Add Portfolio</button>
+    </form>
   </div>
+</div>
 
    <!-- Delete Portfolio Modal -->
   <div id="deletePortfolioModal" class="modal">
@@ -319,72 +353,74 @@
          * @param {object} portfolio - The currently active portfolio object.
          */
         function buildSidebar(portfolio) {
-            const sidebar = document.getElementById('sidebar');
-            const netWorthSection = sidebar.querySelector('.net-worth-section');
-            sidebar.innerHTML = ''; // Clear everything
-            sidebar.appendChild(netWorthSection); // Add back the net worth section
+             const sidebar = document.getElementById('sidebar');
+    const netWorthSection = sidebar.querySelector('.net-worth-section');
+    sidebar.innerHTML = ''; // Clear everything
+    sidebar.appendChild(netWorthSection); // Add back the net worth section
 
-            const holdingsByType = portfolio.holdings.reduce((acc, holding) => {
-                const type = holding.assetType === 'forex' ? 'cash' : holding.assetType;
-                if (!acc[type]) acc[type] = [];
-                acc[type].push(holding);
-                return acc;
-            }, {});
+    const holdingsByType = portfolio.holdings.reduce((acc, holding) => {
+        const type = holding.assetType === 'forex' ? 'cash' : holding.assetType;
+        if (!acc[type]) acc[type] = [];
+        acc[type].push(holding);
+        return acc;
+    }, {});
+
 
             // 1. Always create CASH section
-            const cashSection = document.createElement('div');
-            cashSection.className = 'section';
-            cashSection.innerHTML = `
-                <div class="section-title" onclick="toggleSection('cash')">CASH</div>
-                <div class="section-content" id="cash-content">
-                    <div class="account-item">
-                        <div><div class="account-name"><b>USD</b></div></div>
-                        <div class="account-amount" id="usd"></div>
-                    </div>
-                </div>`;
-            const cashContent = cashSection.querySelector('#cash-content');
+             const cashSection = document.createElement('div');
+    cashSection.className = 'section cash-section'; // <-- Added specific class
+    cashSection.innerHTML = `
+        <div class="section-title" onclick="toggleSection('cash')">CASH</div>
+        <div class="section-content" id="cash-content">
+            <div class="account-item">
+                <div><div class="account-name"><b>USD</b></div></div>
+                <div class="account-amount" id="usd"></div>
+            </div>
+        </div>`;
+    const cashContent = cashSection.querySelector('#cash-content');
 
-            if (holdingsByType.cash) {
-                holdingsByType.cash.forEach(holding => {
-                    const item = document.createElement('div');
-                    item.className = 'account-item clickable';
-                    item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
-                    item.innerHTML = `
-                        <div>
-                            <div class="account-name">${holding.stockId}</div>
-                            <div class="account-details">${holding.assetName}</div>
-                        </div>
-                        <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
-                    cashContent.appendChild(item);
-                });
-            }
-            sidebar.appendChild(cashSection);
-            delete holdingsByType.cash;
+    if (holdingsByType.cash) {
+        holdingsByType.cash.forEach(holding => {
+            const item = document.createElement('div');
+            item.className = 'account-item clickable';
+            item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
+            item.innerHTML = `
+                <div>
+                    <div class="account-name">${holding.stockId}</div>
+                    <div class="account-details">${holding.assetName}</div>
+                </div>
+                <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
+            cashContent.appendChild(item);
+        });
+    }
+    sidebar.appendChild(cashSection);
+    delete holdingsByType.cash;
 
             // 2. Create other sections dynamically
             Object.keys(holdingsByType).sort().forEach(type => {
-                const section = document.createElement('div');
-                section.className = 'section';
-                const sectionContentId = `${type}-content`;
-                section.innerHTML = `<div class="section-title" onclick="toggleSection('${type}')">${type.toUpperCase()}</div>
-                                     <div class="section-content" id="${sectionContentId}"></div>`;
-                const sectionContent = section.querySelector(`#${sectionContentId}`);
+        const section = document.createElement('div');
+        section.className = `section ${type}-section`; // <-- Added type-specific class
+        const sectionContentId = `${type}-content`;
+        section.innerHTML = `
+            <div class="section-title" onclick="toggleSection('${type}')">${type.toUpperCase()}</div>
+            <div class="section-content" id="${sectionContentId}"></div>`;
+        const sectionContent = section.querySelector(`#${sectionContentId}`);
 
-                holdingsByType[type].forEach(holding => {
-                    const item = document.createElement('div');
-                    item.className = 'account-item clickable';
-                    item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
-                    item.innerHTML = `
-                        <div>
-                            <div class="account-name">${holding.stockId}</div>
-                            <div class="account-details">${holding.assetName}</div>
-                        </div>
-                        <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
-                    sectionContent.appendChild(item);
-                });
-                sidebar.appendChild(section);
-            });
-        }
+        holdingsByType[type].forEach(holding => {
+            const item = document.createElement('div');
+            item.className = 'account-item clickable';
+            item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
+            item.innerHTML = `
+                <div>
+                    <div class="account-name">${holding.stockId}</div>
+                    <div class="account-details">${holding.assetName}</div>
+                </div>
+                <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
+            sectionContent.appendChild(item);
+        });
+        sidebar.appendChild(section);
+    });
+}
 
 
         // 5. CORE FUNCTIONALITY

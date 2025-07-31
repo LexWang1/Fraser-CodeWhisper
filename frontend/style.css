@@ -13,7 +13,7 @@
 }
     /* Scale logo without breaking navbar */
 .top-nav .logo img {
-    max-height: 120px;   /* Bigger logo */
+    max-height: 150px;   /* Bigger logo */
     width: auto;        /* Maintain aspect ratio */
     margin-right: 15px;
 }
@@ -33,12 +33,12 @@
 
 
     /* Layout */
-    .container {display:flex;gap:30px;margin-top:80px;padding:20px;}
+    .container {display: flex;align-items: stretch;gap: 30px;margin-top: 80px;padding: 20px;}
     .left-panel {width:280px;display:flex;flex-direction:column;gap:20px;}
     .net-worth-section {background:white;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
     .net-worth-title {font-size:14px;font-weight:600;color:#666;margin-bottom:5px;}
     .net-worth-amount {font-size:24px;font-weight:700;color:#333;}
-    .section {background:white;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+    .section {background:white;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin: 20px 0;padding: 15px; }
     .section-title {font-size:14px;font-weight:600;color:#333;margin-bottom:15px;display:flex;align-items:center;cursor:pointer;}
     .section-title::before {content: '▼';margin-right:8px;font-size:10px;color:#666;transition:transform 0.3s ease;}
     .section-title.collapsed::before {transform:rotate(-90deg);}
@@ -78,7 +78,7 @@
     .carousel-arrow.right {right:10px;}
 
     /* Market & Holdings */
-    .three-columns {display:flex;gap:20px;}
+    .three-columns {display:flex;gap:30px;margin-bottom: 30px;}
     .market-section {flex:1;background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
     .market-indices {display:flex;gap:15px;margin-bottom:20px;}
     .index-card {flex:1;text-align:center;padding:15px;border-radius:8px;border:1px solid #e1e8ed;}
@@ -87,7 +87,7 @@
     .holding-item {display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f2f5;}
 
     /* Insights & Footer */
-    .bottom-section {display:flex;gap:30px;}
+    .bottom-section {display:flex;gap:40px;margin-top: 40px;}
     .insights {flex:2;background:white;border-radius:12px;padding:25px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
     .insights-title {font-size:20px;font-weight:600;margin-bottom:15px;}
     .insight-item {font-size:14px;line-height:1.5;margin-bottom:10px;color:#666;}
@@ -174,13 +174,39 @@
         .sidebar.collapsed .account-item,
         .sidebar.collapsed .net-worth-section { display: none; }
         .sidebar {
-        /* Adjust '70px' to the actual height of your top navigation bar */
-        height: calc(100vh - 70px); 
-        overflow-y: auto; /* Show vertical scrollbar only when needed */
-        width: 20vw;
-        /* Optional: A little padding at the bottom so content doesn't touch the edge */
-        padding-bottom: 20px; 
-    }
+          width: 20vw;
+        }
+      
+
+.sidebar .net-worth-section {
+    max-height: none;
+    overflow-y: hidden;
+}
+
+.sidebar .cash-section {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.sidebar .etf-section {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.sidebar .stock-section {
+    max-height: 350px;
+    overflow-y: auto;
+}
+
+.sidebar .section::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar .section::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
         .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
@@ -196,7 +222,7 @@
         .dashboard-grid {
             display: flex;
             gap: 30px;
-            align-items: flex-start;
+            align-items: stretch;  /* force equal height */
         }
         
          .left-column {
@@ -352,4 +378,9 @@
 #overviewNetWorthChart {
   width: 100%;
   height: 300px;
+}
+
+.carousel,
+.chart-container {
+    margin-bottom: 50px; /* Add vertical spacing below charts */
 }
