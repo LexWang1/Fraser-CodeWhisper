@@ -155,16 +155,16 @@
                 </div>
                 </div>
                 <div class="market-section">
-                <h3 class="holdings-title">Your Gainers</h3>
-                <div class="holding-item"><span>Apple Inc</span><span class="positive">2.53%</span></div>
-                <div class="holding-item"><span>FirstEnergy Corp</span><span class="positive">1.96%</span></div>
-                <div class="holding-item"><span>Duke Energy Corp</span><span class="positive">1.42%</span></div>
+                    <h3 class="holdings-title">Your Gainers</h3>
+                    <div id="gainers-list">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
                 </div>
                 <div class="market-section">
-                <h3 class="holdings-title">Your Losers</h3>
-                <div class="holding-item"><span>Harris Teeter</span><span class="negative">-2.61%</span></div>
-                <div class="holding-item"><span>Gulfport Energy</span><span class="negative">-2.01%</span></div>
-                <div class="holding-item"><span>Microsoft Corp</span><span class="negative">-1.66%</span></div>
+                    <h3 class="holdings-title">Your Losers</h3>
+                    <div id="losers-list">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
                 </div>
             </div>
             <div class="bottom-section">
@@ -262,8 +262,8 @@
                 }
                 adaptedData[assetType][asset.stockId] = {
                     name: asset.assetName,
-                    price: asset.currentPrice,
-                    changePercent: asset.changePercent,
+                    price: asset.currentPrice,//TODO：改成通过API获取
+                    changePercent: asset.changePercent,//TODO
                     holding: asset.quantity,
                     priceHistory: asset.priceHistory,
                     news: asset.news,
@@ -545,6 +545,53 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
 
+        function updateMarketMovers() {
+            if (!portfolioData) return;
+
+            const gainersListEl = document.getElementById('gainers-list');
+            const losersListEl = document.getElementById('losers-list');
+            gainersListEl.innerHTML = ''; 
+            losersListEl.innerHTML = '';
+
+            let allAssets = [];
+            for (const assetType in portfolioData) {
+                for (const symbol in portfolioData[assetType]) {
+                    const asset = portfolioData[assetType][symbol];
+                    if (asset.price != null && asset.changePercent != null && asset.holding > 0) {
+                        const changeAmount = asset.price * (asset.changePercent / 100) * asset.holding;
+                        allAssets.push({
+                            name: asset.name,
+                            changePercent: asset.changePercent,
+                            changeAmount: changeAmount
+                        });
+                    }
+                }
+            }
+
+            const gainers = allAssets.filter(a => a.changeAmount > 0).sort((a, b) => b.changeAmount - a.changeAmount);
+            const losers = allAssets.filter(a => a.changeAmount < 0).sort((a, b) => a.changeAmount - b.changeAmount);
+
+            const topGainers = gainers.slice(0, 3);
+            const topLosers = losers.slice(0, 3);
+
+            if (topGainers.length > 0) {
+                topGainers.forEach(asset => {
+                    gainersListEl.innerHTML += `<div class="holding-item"><span>${asset.name}</span><span class="positive">+${asset.changePercent.toFixed(2)}%</span></div>`;
+                });
+            } else {
+                gainersListEl.innerHTML = '<div class="holding-item"><span>No gainers today.</span></div>';
+            }
+
+            if (topLosers.length > 0) {
+                topLosers.forEach(asset => {
+                    losersListEl.innerHTML += `<div class="holding-item"><span>${asset.name}</span><span class="negative">${asset.changePercent.toFixed(2)}%</span></div>`;
+                });
+            } else {
+                losersListEl.innerHTML = '<div class="holding-item"><span>No losers today.</span></div>';
+            }
+        }
+
+
         // 6. MAIN RENDER & INITIALIZATION
         /**
          * This is the main function to render the entire dashboard for a given portfolio.
@@ -561,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
             buildSidebar(activePortfolio);
             updatePortfolioDropdown();
             initializePortfolioValues();
+            updateMarketMovers(); // Update gainers and losers
 
             // Reset view to overview
             switchView('overview');
