@@ -82,7 +82,7 @@
           "stockId": "GOOGL",
           "assetName": "Google",
           "assetType": "stock",
-          "quantity": -100,
+          "quantity": 100,
           "averageCost": null,
           "currentPrice": 140.22,
           "changePercent": -0.50,

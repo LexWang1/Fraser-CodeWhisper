@@ -181,10 +181,10 @@
                 <div class="market-section">
                 <h3 class="chart-title">Market Movers</h3>
                 <div class="market-indices">
-                    <div class="index-card"><div class="index-change positive">0.65%</div><div>S&P 500</div></div>
-                    <div class="index-card"><div class="index-change negative">-0.72%</div><div>DOW JONES</div></div>
-                    <div class="index-card"><div class="index-change positive">0.14%</div><div>NASDAQ</div></div>
-                    <div class="index-card"><div class="index-change negative">-2.36%</div><div>10 YR BOND</div></div>
+                    <div class="index-card"><div class="index-change positive" id="GSPC">0</div><div>S&P 500</div></div>
+                    <div class="index-card"><div class="index-change negative" id="DJI">0</div><div>DOW JONES</div></div>
+                    <div class="index-card"><div class="index-change positive" id="IXIC">0</div><div>NASDAQ</div></div>
+                    <div class="index-card"><div class="index-change negative" id="TNX">0</div><div>10 YR BOND</div></div>
                 </div>
                 </div>
                 <div class="market-section">
@@ -992,6 +992,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        
+        //update index!
+        let index_array = ["GSPC", "DJI", "IXIC", "TNX"];
+        for (const index_item of index_array){
+            console.log("requesting object:", index_item);
+            let index_url = `http://localhost:3088/currentIndex/^${index_item}`;
+            fetch(index_url).then(response => {
+                if (!response.ok) {
+                throw new Error(`Index request HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`Index ${index_item}:`, data);
+                document.getElementById(index_item).textContent = `${data.toLocaleString( { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                // 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
         }, 10000); // Update every 10 second
         }
 
