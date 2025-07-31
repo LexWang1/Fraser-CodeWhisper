@@ -10,75 +10,33 @@
      <!-- 假设 style.css 包含了两个文件所需的所有样式 -->
   <link rel="stylesheet" href="style.css">
   <style>
-/* Adding necessary styles for functionality */       
-.clickable { cursor: pointer; transition: background-color 0.2s; }
-    .clickable:hover { background-color: #f0f0f02c; }
-    #detail-panel { display: none; }
-    .dropdown-menu .dropdown-item { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-    .dropdown-menu .dropdown-item.active { font-weight: bold; background-color: #f0f0f02c; }
-    .section-content.collapsed { display: none; }
-    .section-title { cursor: pointer; }
-    .delete-portfolio-btn {
-        color: #e74c3c;
-        font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 16px;
-        line-height: 1;
-        visibility: hidden; /* Hide by default */
-    }
-    .dropdown-item:hover .delete-portfolio-btn {
-        visibility: visible; /* Show on hover */
-        background-color: #ddd;
-    }
-    .add-new-item {
-      font-style: italic;
-      color: #3498db;
-      text-align: center;
-      padding-top: 5px;
-      border-top: 1px solid #eee;
-    }
-
-    /* --- START: Styles for Buy/Sell Buttons and Transaction Modal --- */
-    .account-item-container {
-        padding: 10px 15px;
-        border-bottom: 1px solid #444; /* Darker border for dark theme */
-    }
-    /* The original .account-item is now just the top, clickable part */
-    .account-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .action-buttons {
-        display: flex;
-        justify-content: flex-end; /* Align buttons to the right */
-        gap: 10px; /* Space between buttons */
-        padding-top: 8px; /* Space above buttons */
-    }
-    .transaction-btn {
-        padding: 4px 12px;
-        border: none;
-        border-radius: 4px;
+    /* 添加一些必要的样式以确保功能正常 */
+    .clickable {
         cursor: pointer;
-        font-weight: 500;
-        color: white;
-        font-size: 12px;
         transition: background-color 0.2s;
     }
-    .transaction-btn.buy {
-        background-color: #27ae60; /* Green */
+    .clickable:hover {
+        background-color: #f0f0f02c; /* 给予悬停反馈 */
     }
-    .transaction-btn.buy:hover {
-        background-color: #2ecc71;
+
+    #detail-panel {
+        display: none; /* 默认隐藏详情视图 */
     }
-    .transaction-btn.sell {
-        background-color: #c0392b; /* Red */
+
+    /* Style for the active portfolio in the dropdown */
+    .dropdown-menu .dropdown-item {
+        cursor: pointer;
     }
-    .transaction-btn.sell:hover {
-        background-color: #e74c3c;
+    .dropdown-menu .dropdown-item.active {
+        font-weight: bold;
+        background-color: #f0f0f02c;
     }
-    /* --- END: Styles for Buy/Sell Buttons --- */
+    .section-content.collapsed {
+        display: none;
+    }
+    .section-title {
+        cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -86,69 +44,84 @@
   <nav class="top-nav">
     <div class="logo">
       <img src="image/team_logo.png" alt="Code Whisper Logo">
+      
     </div>
     <div class="nav-links">
       <div class="dropdown">
-        <a href="#" class="dropdown-toggle" id="currentPortfolioName">Personal Portfolios</a>
+        <a href="#" class="dropdown-toggle" id="currentPortfolioName">Portfolios</a>
         <div class="dropdown-menu" id="portfolioList">
           <div class="dropdown-item">Loading...</div>
         </div>
       </div>
+      <a href="#add-portfolio" onclick="openModal()">Add Portfolio</a>
+      <a href="#" onclick="openDeleteModal()">Delete Portfolio</a>
     </div>
     <div class="nav-actions">
       <input type="text" placeholder="Search..." class="search-bar">
     </div>
   </nav>
 
+
 <!-- Add Portfolio Modal -->
 <div id="addPortfolioModal" class="modal">
   <div class="modal-content">
-   <span class="close-btn" onclick="closeModal('addPortfolioModal')">×</span>
-     <h3>Add New Portfolio</h3>
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h3>Add New Portfolio</h3>
     <form id="addPortfolioForm">
-         <label for="newPortfolioName">Portfolio Name:</label>
-      <input type="text" id="newPortfolioName" required>      
+      <!-- Portfolio Name -->
+      <label for="portfolioName">Portfolio Name:</label>
+      <input type="text" id="portfolioName" required>
+
+      <!-- Initial Value -->
+      <label for="portfolioValue">Initial Value:</label>
+      <input type="number" id="portfolioValue" required>
+
+      <!-- Asset Type -->
+      <label for="assetType">Asset Type:</label>
+      <select id="assetType" required>
+        <option value="">Select Type</option>
+        <option value="Currency">Currency</option>
+        <option value="Stock">Stock</option>
+        <option value="Bond">Bond</option>
+        <option value="Fund">Fund</option>
+        <option value="Crypto">Crypto</option>
+      </select>
+
+      <!-- Transaction Type -->
+      <label for="transactionType">Transaction Type:</label>
+      <select id="transactionType" required>
+        <option value="">Select Transaction</option>
+        <option value="Buy">Buy In</option>
+        <option value="Sell">Sell Out</option>
+        <option value="Dividend">Dividend</option>
+      </select>
+
+      <!-- Date -->
+      <label for="transactionDate">Transaction Date:</label>
+      <input type="date" id="transactionDate" required>
+
+      <!-- Quantity -->
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" step="0.01" required>
+
+      <!-- Submit -->
       <button type="submit" class="submit-btn">Add Portfolio</button>
     </form>
   </div>
 </div>
-<!---update here-->
 
-<!-- Delete Confirmation Modal -->
-<div id="deletePortfolioModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('deletePortfolioModal')">×</span>
-    <h3>Confirm Deletion</h3>
-    <p>Are you sure you want to delete the portfolio: "<b id="portfolioNameToDelete"></b>"?</p>
-    <p>This action cannot be undone.</p>
-    <div id="deleteConfirmButtons">
-      <!-- The confirm button will be set by JavaScript -->
+   <!-- Delete Portfolio Modal -->
+  <div id="deletePortfolioModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+      <h3>Delete Portfolio</h3>
+      <form id="deletePortfolioForm">
+        <label for="portfolioToDelete">Select Portfolio:</label>
+        <select id="portfolioToDelete" required></select>
+        <button type="submit" class="submit-btn delete-btn">Delete</button>
+      </form>
     </div>
   </div>
-</div>
-
-<!-- START: Generic Transaction Modal -->
-<div id="transactionModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('transactionModal')">×</span>
-    <h3 id="transaction-title">Transaction</h3>
-    <form id="transactionForm">
-      <!-- Hidden fields to store context -->
-      <input type="hidden" id="transactionStockId">
-      <input type="hidden" id="transactionType">
-      
-      <label for="transactionAmount">Amount($):</label>
-      <input type="number" id="transactionAmount" required placeholder="For example: 500.00" step="any" min="0">
-      
-      <label for="transactionDate">Date:</label>
-      <input type="date" id="transactionDate" required>
-      
-      <button type="submit" class="submit-btn">Submit</button>
-    </form>
-  </div>
-</div>
-<!-- END: Generic Transaction Modal -->
-
 
   <div class="container">
        <div class="sidebar" id="sidebar">
@@ -167,34 +140,21 @@
                 <div class="carousel-inner" id="carouselInner">
 
                     <div class="carousel-slide">
-                        <h3 class="chart-title">Portfolio Value Over Time</h3>
-                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
-                             <div class="controls" style="margin-top: -15px;">
-                                <label for="startDate">Start Date:</label>
-                                <input type="date" id="startDate" value="2025-05-20">
-                            </div>
-                          
-                       <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
-                                                                                 
-                                                                       
-                    </div> 
-
-                    <div class="carousel-slide">
                         <h3 class="chart-title">Cash Flow</h3>
                         <div style="display:flex;justify-content:space-around;align-items:center;">
                         <div class="donut-container">
                         <div class="donut-chart">
-                            <div id="incomeChart" style="width: 350px; height: 350px;margin-top: -20px;"></div>
-                            <div style="text-align: center; margin-top: -40px;">
-                                <div style="font-weight: 600; color: #666;">Gains</div>
+                            <div id="incomeChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
+                            <div style="text-align: center; margin-top: -50px;">
+                                <div style="font-weight: 600; color: #666;">Gain</div>
                                 <!--<div style="font-size: 20px; font-weight: 700; color: #3498db;">$18,665</div>-->
                                 <div id="gain-amount" style="font-size: 20px; font-weight: 700; color: #3498db;">$0.00</div>
                             </div>
                         </div>
                         <div class="donut-chart">
-                            <div id="spendingChart" style="width: 350px; height: 350px;margin-top: -20px;"></div>
-                            <div style="text-align: center; margin-top: -40px;">
-                                <div style="font-weight: 600; color: #666;">Losses</div>
+                            <div id="spendingChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
+                            <div style="text-align: center; margin-top: -50px;">
+                                <div style="font-weight: 600; color: #666;">Lose</div>
                                 <!--<div style="font-size: 20px; font-weight: 700; color: #e74c3c;">$42,500</div>--->
                                 <div id="spending-amount" style="font-size: 20px; font-weight: 700; color: #e74c3c;">$0.00</div>
 
@@ -205,7 +165,18 @@
                         </div>
                     </div>
 
-                    
+                     <div class="carousel-slide">
+                        <h3 class="chart-title">Stock Price Over Time</h3>
+                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
+                             <div class="controls" style="margin-top: -15px;">
+                                <label for="startDate">Start Date:</label>
+                                <input type="date" id="startDate" value="2025-05-20">
+                            </div>
+                          
+                       <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
+                                                                                 
+                                                                       
+                    </div>     
                     </div>
                
                 <button class="carousel-arrow right" onclick="nextSlide()">&#8250;</button>
@@ -303,11 +274,7 @@
         let portfolioData = null; // Holds the *adapted* data for the current portfolio
         let assetDetailChart = null;
         let usd = 1000; // Base cash amount
-        //let localPortfolios = []; // For the add/delete modal functionality
-        let overviewChart = null; // ECharts instance for the overview chart
-        let _rawData = []; // To store historical price data from all_data.json
-        let currentPortfolioId = null;
-        let portfolioHistoryCache = null;
+        let localPortfolios = []; // For the add/delete modal functionality
 
         // 2. HELPER FUNCTIONS
         function formatTimestamp(isoString) {
@@ -359,13 +326,14 @@
             const currentPortfolioNameEl = document.getElementById("currentPortfolioName");
             portfolioList.innerHTML = '';
 
-         if (allPortfolios.length === 0) {
-                currentPortfolioNameEl.textContent = "No Portfolios";
-            } else {
-                currentPortfolioNameEl.textContent = "My Portfolios";
+            if (allPortfolios.length === 0) {
+                portfolioList.innerHTML = '<div class="dropdown-item">No portfolios found</div>';
+                currentPortfolioNameEl.textContent = "Portfolios";
+                return;
             }
+
             // currentPortfolioNameEl.textContent = allPortfolios[currentPortfolioIndex].name;
-            //currentPortfolioNameEl.textContent = "Portfolios";
+            currentPortfolioNameEl.textContent = "Portfolios";
 
             allPortfolios.forEach((p, index) => {
                 const item = document.createElement("div");
@@ -373,137 +341,16 @@
                 if (index === currentPortfolioIndex) {
                     item.classList.add('active');
                 }
-                
-                // Portfolio name part, clickable to switch
-                const nameSpan = document.createElement("span");
-                nameSpan.textContent = p.name;
-                nameSpan.style.flexGrow = "1"; // Make name take available space
-                nameSpan.onclick = (e) => {
-                    e.stopPropagation(); // Prevent delete from triggering
+                item.href = `#`;
+                item.textContent = p.name;
+                item.onclick = (e) => {
+                    e.preventDefault();
                     if (index !== currentPortfolioIndex) {
                         renderDashboard(index);
                     }
                 };
-
-                // Delete button part
-                const deleteBtn = document.createElement("span");
-                deleteBtn.className = "delete-portfolio-btn";
-                deleteBtn.innerHTML = "×"; // 'x' symbol
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation(); // Prevent switch from triggering
-                    openDeleteConfirmation(index);
-                };
-
-                item.appendChild(nameSpan);
-                item.appendChild(deleteBtn);
                 portfolioList.appendChild(item);
             });
-            
-            // Add the "Add New" button at the end
-            const addItem = document.createElement("div");
-            addItem.className = "dropdown-item add-new-item";
-            addItem.textContent = "+ Add New Portfolio";
-            addItem.onclick = () => openModal('addPortfolioModal');
-            portfolioList.appendChild(addItem);
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        function handleAddPortfolio(event) {
-            event.preventDefault();
-            const input = document.getElementById("newPortfolioName");
-            const newName = input.value.trim();
-
-            if (newName && !allPortfolios.some(p => p.name.toLowerCase() === newName.toLowerCase())) {
-                const newPortfolio = {
-                    name: newName,
-                    holdings: [] // Create a new portfolio with no holdings
-                };
-                allPortfolios.push(newPortfolio);
-                
-                input.value = ''; // Reset form
-                closeModal('addPortfolioModal');
-                renderDashboard(allPortfolios.length - 1); // Switch to the new portfolio
-            } else if (!newName) {
-                alert("Portfolio name cannot be empty.");
-            } else {
-                alert("A portfolio with this name already exists.");
-            }
-        }
-
-        function openDeleteConfirmation(index) {
-            const portfolio = allPortfolios[index];
-            if (!portfolio) return;
-
-            document.getElementById('portfolioNameToDelete').textContent = portfolio.name;
-            
-            const confirmButtonsDiv = document.getElementById('deleteConfirmButtons');
-            confirmButtonsDiv.innerHTML = `
-                <button class="submit-btn delete-btn" onclick="deletePortfolio(${index})">Delete</button>
-                <button class="submit-btn" onclick="closeModal('deletePortfolioModal')">Cancel</button>
-            `;
-            
-            openModal('deletePortfolioModal');
-        }
-
-        function deletePortfolio(index) {
-            allPortfolios.splice(index, 1);
-            closeModal('deletePortfolioModal');
-            
-            if (currentPortfolioIndex >= index) {
-                currentPortfolioIndex = Math.max(0, allPortfolios.length - 1);
-            }
-
-            if (allPortfolios.length > 0) {
-                renderDashboard(currentPortfolioIndex);
-            } else {
-                portfolioData = {};
-                buildSidebar({ name: "None", holdings: [] });
-                updatePortfolioDropdown();
-                initializePortfolioValues();
-                updateMarketMovers();
-                switchView('overview');
-                document.getElementById('total').textContent = '$0.00';
-                document.getElementById('gainers-list').innerHTML = 'No portfolios to display.';
-                document.getElementById('losers-list').innerHTML = '';
-            }
-        }
-
-
-        // --- MODIFIED: Functions for the new transaction modal ---
-        function openTransactionModal(type, stockId) {
-            const typeText = type === 'Buy' ? 'Buy' : 'Sell';
-            document.getElementById('transaction-title').textContent = `${typeText} ${stockId}`;
-            document.getElementById('transactionStockId').value = stockId;
-            document.getElementById('transactionType').value = type;
-            
-            // Set current date as default
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('transactionDate').value = today;
-
-            // Clear previous amount
-            document.getElementById('transactionAmount').value = '';
-
-            openModal('transactionModal');
-        }
-
-        function handleTransactionSubmit(event) {
-            event.preventDefault(); // Prevent actual form submission for this demo
-            const stockId = document.getElementById('transactionStockId').value;
-            const type = document.getElementById('transactionType').value;
-            const amount = document.getElementById('transactionAmount').value;
-            const date = document.getElementById('transactionDate').value;
-
-            // In a real app, you would send this data to a server
-            alert(`表单已提交 (仅为演示):\n类型: ${type}\n资产: ${stockId}\n金额: $${amount}\n日期: ${date}`);
-
-            closeModal('transactionModal');
         }
 
         /**
@@ -535,22 +382,22 @@
                 <div class="account-amount" id="usd"></div>
             </div>
         </div>`;
-        const cashContent = cashSection.querySelector('#cash-content');
+    const cashContent = cashSection.querySelector('#cash-content');
 
-            if (holdingsByType.cash) {
-                holdingsByType.cash.forEach(holding => {
-                    const item = document.createElement('div');
-                    item.className = 'account-item clickable';
-                    item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
-                    item.innerHTML = `
-                        <div>
-                            <div class="account-name">${holding.stockId}</div>
-                            <div class="account-details">${holding.assetName}</div>
-                        </div>
-                        <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
-                    cashContent.appendChild(item);
-                });
-            }
+    if (holdingsByType.cash) {
+        holdingsByType.cash.forEach(holding => {
+            const item = document.createElement('div');
+            item.className = 'account-item clickable';
+            item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
+            item.innerHTML = `
+                <div>
+                    <div class="account-name">${holding.stockId}</div>
+                    <div class="account-details">${holding.assetName}</div>
+                </div>
+                <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
+            cashContent.appendChild(item);
+        });
+    }
     sidebar.appendChild(cashSection);
     delete holdingsByType.cash;
 
@@ -566,25 +413,19 @@
 
         holdingsByType[type].forEach(holding => {
             const item = document.createElement('div');
-            item.className = 'account-item-container'; 
+            item.className = 'account-item clickable';
+            item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
             item.innerHTML = `
-                        <div class="account-item clickable" onclick="showAsset('${holding.assetType}', '${holding.stockId}')">
-                            <div>
-                                <div class="account-name">${holding.stockId}</div>
-                                <div class="account-details">${holding.assetName}</div>
-                            </div>
-                            <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>
-                        </div>
-                        <div class="action-buttons">
-                            <button class="transaction-btn buy" onclick="openTransactionModal('Buy', '${holding.stockId}')">Buy</button>
-                            <button class="transaction-btn sell" onclick="openTransactionModal('Sell', '${holding.stockId}')">Sell</button>
-                        </div>
-                    `;
-                    sectionContent.appendChild(item);
-                });
-                sidebar.appendChild(section);
-            });
-        }
+                <div>
+                    <div class="account-name">${holding.stockId}</div>
+                    <div class="account-details">${holding.assetName}</div>
+                </div>
+                <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
+            sectionContent.appendChild(item);
+        });
+        sidebar.appendChild(section);
+    });
+}
 
 
         // 5. CORE FUNCTIONALITY
@@ -594,12 +435,10 @@
             if (viewName === 'overview') {
                 overviewPanel.style.display = 'block';
                 detailPanel.style.display = 'none';
-                  if (overviewChart) overviewChart.resize(); // 确保图表在视
             } else if (viewName === 'detail') {
                 overviewPanel.style.display = 'none';
                 detailPanel.style.display = 'flex';
                 detailPanel.style.flexDirection = 'column';
-                 if (assetDetailChartInstance) assetDetailChartInstance.resize();
             }
         }
     
@@ -613,6 +452,7 @@
             }
             const asset = portfolioData[assetType][symbol];
             switchView('detail');
+
             
             currentAssetName = symbol;
 
@@ -640,10 +480,14 @@
             //).join('');
 
             const newsList = document.getElementById('news-list');
+
+
             newsList.innerHTML = asset.news.map(item =>
                 `<div class="news-item"><a href="${item.url}" target="_blank" rel="noopener noreferrer" class="news-title-link">${item.title}</a><div class="news-meta"><span class="news-source">${item.source}</span><span class="news-date">${item.date}</span></div></div>`
             ).join('');
             console.log("showAsset executed for", assetType, symbol);
+
+            
         }
         
 function updateAssetDetailChartFromJson(symbol, asset) {
@@ -738,7 +582,6 @@ function updateAssetDetailChart(seriesData, assetName, assetTransactions = []) {
       datasetId: 'dataset_raw',
       name: assetName,
       showSymbol: false,
-      smooth: false,
       encode: { x: 'date', y: 'price', tooltip: ['price'] },
       lineStyle: { width: 3, color: '#3498db' },
       areaStyle: { color: 'rgba(52, 152, 219, 0.1)' },
@@ -815,18 +658,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         function initializePortfolioValues() {
-            if (!portfolioData) {
-              document.getElementById('total').textContent = '$0.00';
-              document.getElementById('usd').textContent = '$0.00';
-              return;
-            };
+            if (!portfolioData) return;
             let totalValue = usd;
             document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
             for (const assetType in portfolioData) {
                 for (const symbol in portfolioData[assetType]) {
                     const asset = portfolioData[assetType][symbol];
-                    const holdingValue = (asset.holding > 0 ? asset.holding : 0) * asset.price;
+                    const holdingValue = (asset.holding > 0 ? asset.holding : 0) * asset.price; // Ignore negative (short) positions for total
                     totalValue += holdingValue;
                     const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
                     if (element) {
@@ -844,12 +683,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const losersListEl = document.getElementById('losers-list');
             gainersListEl.innerHTML = ''; 
             losersListEl.innerHTML = '';
-            
-            if (!portfolioData || Object.keys(portfolioData).length === 0) {
-                 gainersListEl.innerHTML = '<div class="holding-item"><span>No holdings to display.</span></div>';
-                 losersListEl.innerHTML = '';
-                 return;
-            }
 
             let allAssets = [];
             for (const assetType in portfolioData) {
@@ -923,218 +756,12 @@ function updateTransactionTable(asset) {
   console.log(`✅ Transaction table updated for ${currentAssetName} with ${transactions.length} rows.`);
 }
 
-
-
-       // --- 核心修改部分 ---
-
-        /**
-         * [新增] 1. 计算投资组合的历史总价值
-         * @param {Array} holdings - 当前投资组合的持仓列表 (e.g., [{stockId: 'TSLA', quantity: 10}, ...])
-         * @param {Array} allPriceData - 所有资产的历史价格 (来自 all_data.json)
-         * @returns {Array} - 一个包含每日总价值的数组 (e.g., [{date: '2023-01-01', value: 150000}, ...])
-         */
-        function calculatePortfolioHistory(holdings, allPriceData) {
-            if (!holdings || holdings.length === 0 || !allPriceData || allPriceData.length === 0) {
-                return [];
-            }
-             console.log("📊 Calculating history with holdings:", holdings);
-            console.log("📊 Raw data sample:", allPriceData.slice(0, 2));
-            const holdingQuantities = holdings.reduce((acc, h) => {
-                acc[h.stockId] = h.quantity;
-                return acc;
-            }, {});
-
-            const portfolioAssetSymbols = Object.keys(holdingQuantities);
-
-            // 改进：先按日期排序原始数据
-            const sortedPriceData = allPriceData
-                .filter(dataPoint => portfolioAssetSymbols.includes(dataPoint.name))
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-            // 按日期分组
-            const pricesByDate = sortedPriceData.reduce((acc, dataPoint) => {
-                if (!acc[dataPoint.date]) {
-                    acc[dataPoint.date] = {};
-                }
-                acc[dataPoint.date][dataPoint.name] = dataPoint.price;
-                return acc;
-            }, {});
-
-            const portfolioHistory = [];
-            const dates = Object.keys(pricesByDate).sort(); // 确保日期顺序
-
-            for (const date of dates) {
-                let dailyTotalValue = usd || 1000; // 防止 usd 未定义
-                let hasAllPrices = true;
-                
-                for (const symbol of portfolioAssetSymbols) {
-                    const price = pricesByDate[date][symbol];
-                    const quantity = holdingQuantities[symbol];
-
-                    if (price !== undefined && quantity !== undefined) {
-                        dailyTotalValue += price * quantity;
-                    } else {
-                        hasAllPrices = false;
-                        break;
-                    }
-                }
-
-                // 只添加有完整价格数据的日期
-                if (hasAllPrices) {
-                    portfolioHistory.push({ 
-                        date: date, 
-                        value: dailyTotalValue,
-                        dateObj: new Date(date) // 预计算日期对象
-                    });
-                }
-            }
-
-            return portfolioHistory;
-        }
-
-        /**
-         * [修复] 改进的概览图表更新函数
-         */
-        function updateOverviewChart() {
-            console.log('updateOverviewChart called'); // 调试日志
-            
-            if (!overviewChart || _rawData.length === 0) {
-                console.log('Chart or data not ready');
-                return;
-            }
-            
-            const currentPortfolio = allPortfolios[currentPortfolioIndex];
-            const portfolioId = `${currentPortfolioIndex}_${currentPortfolio.name}`;
-            
-            // 检查是否需要重新计算历史数据
-            if (currentPortfolioId !== portfolioId || !portfolioHistoryCache) {
-                console.log('Recalculating portfolio history');
-                portfolioHistoryCache = calculatePortfolioHistory(currentPortfolio.holdings, _rawData);
-                currentPortfolioId = portfolioId;
-            }
-
-            // 获取过滤日期
-            const startDateInput = document.getElementById('startDate');
-            if (!startDateInput) {
-                console.error('Start date input not found');
-                return;
-            }
-            
-            const startDate = new Date(startDateInput.value);
-            console.log('Filter date:', startDate);
-
-            // 过滤数据 - 使用预计算的日期对象
-            const filteredData = portfolioHistoryCache.filter(d => d.dateObj >= startDate);
-            console.log('Filtered data points:', filteredData.length);
-
-            if (filteredData.length === 0) {
-                console.log('No data after filtering');
-                overviewChart.clear();
-                return;
-            }
-            
-            // 准备图表数据
-            const chartData = filteredData.map(item => ({
-                date: item.date,
-                value: item.value
-            }));
-
-            // 计算数值范围以优化Y轴
-            const values = chartData.map(d => d.value);
-            const minValue = Math.min(...values);
-            const maxValue = Math.max(...values);
-            const padding = (maxValue - minValue) * 0.1; // 10% 填充
-
-            // 更新图表配置 - 不使用 true 参数
-            const option = {
-                animationDuration: 1000, // 减少动画时间
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: function (params) {
-                        const data = params[0];
-                        return `${data.axisValueLabel}<br/>Value: $${data.value.toLocaleString('en-US', { 
-                            minimumFractionDigits: 2, 
-                            maximumFractionDigits: 2 
-                        })}`;
-                    }
-                },
-                xAxis: {
-                    type: 'category',
-                    data: chartData.map(item => item.date),
-                    axisLabel: {
-                        rotate: 45, // 旋转日期标签避免重叠
-                        fontSize: 12
-                    }
-                },
-                yAxis: {
-                    type: 'value',
-                    name: 'Total Value ($USD)',
-                    min: Math.max(0, minValue - padding), // 设置合理的最小值
-                    max: maxValue + padding,
-                    axisLabel: {
-                        formatter: function(value) {
-                            if (value >= 1000000) {
-                                return '$' + (value / 1000000).toFixed(1) + 'M';
-                            } else if (value >= 1000) {
-                                return '$' + (value / 1000).toFixed(0) + 'K';
-                            }
-                            return '$' + value.toFixed(0);
-                        }
-                    },
-                    scale: true
-                },
-                grid: {
-                    left: 80,
-                    right: 30,
-                    top: 60,
-                    bottom: 80 // 增加底部空间容纳旋转的标签
-                },
-                series: [{
-                    name: 'Portfolio Value',
-                    type: 'line',
-                    data: chartData.map(item => item.value),
-                    showSymbol: false,
-                    smooth: false,
-                    lineStyle: {
-                        width: 3,
-                        color: '#3498db'
-                    },
-                    areaStyle: {
-                        opacity: 0.5,
-                        color: 'rgba(52, 152, 219, 0.1)'
-                    }
-                    
-                }]
-            };
-
-            // 使用 notMerge: false 来更新而非替换配置
-            overviewChart.setOption(option, false);
-            console.log('Chart updated successfully');
-        }
-
-
         // 6. MAIN RENDER & INITIALIZATION
         /**
          * This is the main function to render the entire dashboard for a given portfolio.
          * @param {number} portfolioIndex - The index of the portfolio to render.
          */
-       
-        
-
-// 6. MAIN RENDER & INITIALIZATION
-        /**
-         * This is the main function to render the entire dashboard for a given portfolio.
-         * @param {number} portfolioIndex - The index of the portfolio to render.
-         */
-
-function initializeOverviewChart() {
-    const dom = document.getElementById('overviewNetWorthChart');
-    if (dom && !overviewChart) {
-        overviewChart = echarts.init(dom);
-        console.log('✅ overviewChart initialized');
-    }}
         function renderDashboard(portfolioIndex) {
-            if (portfolioIndex < 0 || portfolioIndex >= allPortfolios.length) { portfolioIndex = 0; }
             currentPortfolioIndex = portfolioIndex;
             const activePortfolio = allPortfolios[portfolioIndex];
 
@@ -1149,23 +776,11 @@ function initializeOverviewChart() {
             updateMarketMovers(); // Update gainers and losers
 
             // Reset view to overview
-            portfolioHistoryCache = null;
-            currentPortfolioId = null;
-            
-
             const { gainList, loseList } = calculateIncomeSpendingFromHoldings(activePortfolio.holdings);
             updateIncomeChart(gainList);
             updateSpendingChart(loseList);
             updateGainSpendingLabels(gainList, loseList);
             switchView('overview');
-            
-            if (!overviewChart) {console.warn("⚠️ overviewChart is not initialized!");}
-
-            setTimeout(() => {
-                initializeOverviewChart();
-                overviewChart.resize();      // 确保渲染正确
-                updateOverviewChart();
-            }, 100)
             // updateTransactionTable();
             console.log(`Switched to portfolio: ${activePortfolio.name}`);
         }
@@ -1175,43 +790,122 @@ function initializeOverviewChart() {
          */
 
         function initializeApp() {
-            if (allPortfolios && allPortfolios.length > 0) {
-                renderDashboard(0);
-                updateOverviewChart();
-            } else {
-                updatePortfolioDropdown();
-                document.getElementById('sidebar').innerHTML = "<h1>Please add a portfolio to begin.</h1>";
-                document.getElementById('total').textContent = '$0.00';
-            }
-            const chartDom = document.getElementById('overviewNetWorthChart');
-            overviewChart = echarts.init(chartDom);
-            console.log(chartDom); 
-            // 为 ECharts 实例添加 resize 监听器
-            window.addEventListener('resize', () => {
-                if (overviewChart) overviewChart.resize();
-            });
-
-            // [修改] 获取所有历史价格数据并存储到全局变量
-        
-            // [修改] 获取所有历史价格数据并存储到全局变量
-            $.get('data/all_data.json', function (data) {
-                _rawData = data; // 存储原始数据
-                
-                // 数据加载完成后，渲染第一个投资组合
-                renderDashboard(0);
-            
-                // [修改] 日期选择器现在只触发图表更新，不再处理复杂逻辑
-                document.getElementById('startDate').addEventListener('change', updateOverviewChart);
-                
-            });
-
-
-
-            //renderDashboard(0); // Render the first portfolio by default
+            renderDashboard(0); // Render the first portfolio by default
 
             // Initialize OVERVIEW charts (static data for now)
             // const overviewNetWorthCtx = document.getElementById('overviewNetWorthChart').getContext('2d');
-            
+            let _rawData = [];
+            const chart = echarts.init(document.getElementById('overviewNetWorthChart'));
+            chart.resize();
+
+                        $.get('data/all_data.json', function (data) {
+                        data.forEach(d => {
+                            d.dateObj = new Date(d.date);
+                        });
+                        data.sort((a, b) => a.dateObj - b.dateObj);
+                        _rawData = data;
+
+                        updateChart();
+                        });
+
+                        document.getElementById('startDate').addEventListener('change', updateChart);
+
+                        function updateChart() {
+                        const startDate = new Date(document.getElementById('startDate').value);
+                        const filtered = _rawData
+                            .filter(d => d.dateObj >= startDate)
+                            .sort((a, b) => a.dateObj - b.dateObj);
+                        run(filtered);
+                        }
+
+                        function run(processedData) {
+                        const invest_types = [
+                                'bitcoin', 'ethereum', 'ripple', 'dogecoin','NVDA', 'TSLA', 'HSBC', 'MSFT', 'GOOGL','SPY', 'QQQ', 'GLD', 'AGG'
+                            ];
+                        const datasetWithFilters = [];
+                        const seriesList = [];
+
+                        echarts.util.each(invest_types, function (name) {
+                            const datasetId = 'dataset_' + name;
+                            datasetWithFilters.push({
+                            id: datasetId,
+                            fromDatasetId: 'dataset_raw',
+                            transform: {
+                                type: 'filter',
+                                config: {
+                                and: [{ dimension: 'name', '=': name }]
+                                }
+                            }
+                            });
+                            seriesList.push({
+                            type: 'line',
+                            datasetId: datasetId,
+                            showSymbol: false,
+                            name: name,
+                            areaStyle: {opacity: 0.15},
+                            endLabel: {
+                                show: true,
+                                formatter: function (params) {
+                                return params.seriesName + ': ' + params.data.price.toFixed(2);
+                                }
+                            },
+                            labelLayout: {
+                                moveOverlap: 'shiftY'
+                            },
+                            emphasis: {
+                                focus: 'series'
+                            },
+                            encode: {
+                                x: 'date',
+                                y: 'price',
+                                label: ['name', 'price'],
+                                itemName: 'date',
+                                tooltip: ['price']
+                            }
+                            });
+                        });
+
+                        const option = {
+                            animationDuration: 5000,
+                            dataset: [
+                            {
+                                id: 'dataset_raw',
+                                source: processedData
+                            },
+                            ...datasetWithFilters
+                            ],
+                            /*title: {
+                            text: 'Investment Performance'
+                            },*/
+                            tooltip: {
+                            order: 'valueDesc',
+                            trigger: 'axis'
+                            },
+                            
+                            xAxis: {
+                            type: 'category',
+                            nameLocation: 'middle'
+                            },
+                            yAxis: {
+                            name: 'Price($USD)'
+                            },
+                            grid: {
+                                left: 80,     // ✅ 保证图表靠左
+                                right: 120,   // ✅ 为右侧 label 留空间
+                                top: 30,
+                                bottom: 0,
+                                containLabel: true
+                                },
+                            series: seriesList
+                        };
+                        chart.clear();  
+                        chart.setOption(option);
+                      
+                    window.addEventListener('resize', () => {
+  if (chart) {
+    chart.resize();
+  }
+});}
                         
       /*const incomeCtx = document.getElementById('incomeChart').getContext('2d');
             new Chart(incomeCtx, { type: 'doughnut', data: { datasets: [{ data: [18665, 5000], backgroundColor: ['#2ecc71', '#ecf0f1'], cutout: '70%' }] }, options: { plugins: { legend: { display: false } } } });
@@ -1221,8 +915,8 @@ function initializeOverviewChart() {
         
  
             // Initialize Modal event listeners
-            //document.getElementById("addPortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const name = document.getElementById("portfolioName").value; const value = document.getElementById("portfolioValue").value; if (name && value) { localPortfolios.push({ name, value }); closeModal(); this.reset(); } });
-            //document.getElementById("deletePortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const index = document.getElementById("portfolioToDelete").value; if (index !== null && index < localPortfolios.length) { localPortfolios.splice(index, 1); closeDeleteModal(); } });
+            document.getElementById("addPortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const name = document.getElementById("portfolioName").value; const value = document.getElementById("portfolioValue").value; if (name && value) { localPortfolios.push({ name, value }); closeModal(); this.reset(); } });
+            document.getElementById("deletePortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const index = document.getElementById("portfolioToDelete").value; if (index !== null && index < localPortfolios.length) { localPortfolios.splice(index, 1); closeDeleteModal(); } });
         }
 
         function calculateIncomeSpendingFromHoldings(holdings) {
@@ -1233,11 +927,11 @@ function initializeOverviewChart() {
                     const { assetName, assetType, currentPrice, priceHistory, quantity,history} = asset;
 
                     // 取历史价格，this is for test
-                    const historyPrice = Array.isArray(priceHistory) && priceHistory.length > 0
-                        ? priceHistory[priceHistory.length - 2] || priceHistory[0]
-                        : currentPrice; // fallback
+                    //const historyPrice = Array.isArray(priceHistory) && priceHistory.length > 0
+                    //    ? priceHistory[priceHistory.length - 2] || priceHistory[0]
+                    //    : currentPrice; // fallback
 
-                    const diff = currentPrice-historyPrice; //- history;
+                    const diff = currentPrice-history;//historyPrice; //- history;
                     const value = diff * quantity;
 
                     const roundedValue = Math.round(Math.abs(value) * 100) / 100;
@@ -1285,16 +979,6 @@ function initializeOverviewChart() {
     const pieData = aggregateByAssetType(gainList);
 
     const option = {
-        color: [ '#1976d2',
-  '#90caf9', // 浅蓝（Sky Blue）
-  '#64b5f6', // 淡蓝（Dodger Blue）
-  '#42a5f5', // 常规蓝（Medium Blue）
-  '#2196f3', // 标准蓝（Primary Blue）
-  '#1e88e5', // 深蓝（Ocean Blue）
-  '#1976d2', // 深一点的蓝
-  '#1565c0', // 夜蓝（Navy）
-  '#0d47a1'  // 最深蓝（Midnight Blue）
-],
         tooltip: { trigger: 'item' },
         legend: {
             top: '5%',
@@ -1326,15 +1010,7 @@ function initializeOverviewChart() {
 
 function updateSpendingChart(loseList) {
     const chart = echarts.init(document.getElementById('spendingChart'));
-    const colorList = ["#e74c3c",
-  '#ef9a9a', // 柔和红（Blush Red）
-  '#e57373', // 番茄红（Soft Coral）
-  '#ef5350', // 鲜红（Tomato）
-  '#f44336', // 正红（Red）
-  '#e53935', // 深红（Dark Red）
-  '#d32f2f', // 酒红（Wine Red）
-  '#b71c1c'  // 最深红（Maroon）
-];
+    const colorList = ['#EE6666', '#73C0DE', '#3BA272','#5470C6', '#91CC75', '#FAC858'];
 
     const pieData = aggregateByAssetType(loseList).map((item, index) => ({
         ...item,
@@ -1342,7 +1018,6 @@ function updateSpendingChart(loseList) {
     }));
 
     const option = {
-        
         tooltip: { trigger: 'item' },
         legend: {
             top: '5%',
@@ -1397,12 +1072,17 @@ function updateGainSpendingLabels(gainList, loseList) {
     }
 }
 
+
 // 7. PAGE LOAD & UTILITY FUNCTIONS
         document.addEventListener('DOMContentLoaded', () => {
             fetch('data/portfolios.json')
                 .then(response => { if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } return response.json(); })
                 .then(jsonData => {
-                   allPortfolios = jsonData.portfolios || [];
+                    allPortfolios = jsonData.portfolios;
+                    if (!allPortfolios || allPortfolios.length === 0) {
+                        document.getElementById('sidebar').innerHTML = "<h1>No portfolio data found.</h1>";
+                        return;
+                    }
                     initializeApp();
                 })
                 .catch(error => {
@@ -1411,13 +1091,12 @@ function updateGainSpendingLabels(gainList, loseList) {
                 });
         });
 
-        let interval_1;
+        let interval_1; //定义定时对象
         function startCounter() {
-        interval_1 = setInterval(() => { 
-            if (!portfolioData) return;
-            let totalValue = usd;
+        interval_1 = setInterval(() => {
+            let totalValue = usd; //人为设定的usd持有量
             document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                  for (const assetType in portfolioData) {
+            for (const assetType in portfolioData) {
                 for (const symbol in portfolioData[assetType]) {
                     // console.log(assetType , symbol);///
                     if(assetType == "stock") {
@@ -1501,7 +1180,9 @@ function updateGainSpendingLabels(gainList, loseList) {
         }, 10000); // Update every 10 second
         }
 
-        function stopCounter() { clearInterval(interval_1);}
+        function stopCounter() { // 可以用按钮触发停止更新， 目前暂时不管停止更新的问题
+        clearInterval(interval_1);
+        }
 
     // Start the counter when the page loads
         startCounter();
@@ -1511,10 +1192,10 @@ function updateGainSpendingLabels(gainList, loseList) {
         function showSlide(index) { const carouselInner = document.getElementById('carouselInner'); const totalSlides = carouselInner.children.length; currentSlide = (index + totalSlides) % totalSlides; carouselInner.style.transform = 'translateX(' + (-currentSlide * 100) + '%)'; }
         function nextSlide() { showSlide(currentSlide + 1); }
         function prevSlide() { showSlide(currentSlide - 1); }
-        //function openModal() { document.getElementById('addPortfolioModal').style.display = 'flex'; }
-        //function closeModal() { document.getElementById('addPortfolioModal').style.display = 'none'; }
-        //function openDeleteModal() { const select = document.getElementById("portfolioToDelete"); select.innerHTML = ''; localPortfolios.forEach((p, index) => { const option = document.createElement("option"); option.value = index; option.textContent = `${p.name} - $${parseFloat(p.value).toLocaleString()}`; select.appendChild(option); }); document.getElementById("deletePortfolioModal").style.display = "flex"; }
-        //function closeDeleteModal() { document.getElementById("deletePortfolioModal").style.display = "none"; }
+        function openModal() { document.getElementById('addPortfolioModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('addPortfolioModal').style.display = 'none'; }
+        function openDeleteModal() { const select = document.getElementById("portfolioToDelete"); select.innerHTML = ''; localPortfolios.forEach((p, index) => { const option = document.createElement("option"); option.value = index; option.textContent = `${p.name} - $${parseFloat(p.value).toLocaleString()}`; select.appendChild(option); }); document.getElementById("deletePortfolioModal").style.display = "flex"; }
+        function closeDeleteModal() { document.getElementById("deletePortfolioModal").style.display = "none"; }
  
     </script>
 </body>

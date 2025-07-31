@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+     <!-- 假设 style.css 包含了两个文件所需的所有样式 -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* 添加一些必要的样式以确保功能正常 */
+    .clickable {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .clickable:hover {
+        background-color: #f0f0f02c; /* 给予悬停反馈 */
+    }
+
+    #detail-panel {
+        display: none; /* 默认隐藏详情视图 */
+    }
+
+    /* Style for the active portfolio in the dropdown */
+    .dropdown-menu .dropdown-item {
+        cursor: pointer;
+    }
+    .dropdown-menu .dropdown-item.active {
+        font-weight: bold;
+        background-color: #f0f0f02c;
+    }
+    .section-content.collapsed {
+        display: none;
+    }
+    .section-title {
+        cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation (from financial_test6.html) -->
+  <nav class="top-nav">
+    <div class="logo">
+      <img src="image/team_logo.png" alt="Code Whisper Logo">
+      
+    </div>
+    <div class="nav-links">
+      <div class="dropdown">
+        <a href="#" class="dropdown-toggle" id="currentPortfolioName">Portfolios</a>
+        <div class="dropdown-menu" id="portfolioList">
+          <div class="dropdown-item">Loading...</div>
+        </div>
+      </div>
+      <a href="#add-portfolio" onclick="openModal()">Add Portfolio</a>
+      <a href="#" onclick="openDeleteModal()">Delete Portfolio</a>
+    </div>
+    <div class="nav-actions">
+      <input type="text" placeholder="Search..." class="search-bar">
+    </div>
+  </nav>
+
+
+<!-- Add Portfolio Modal -->
+<div id="addPortfolioModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h3>Add New Portfolio</h3>
+    <form id="addPortfolioForm">
+      <!-- Portfolio Name -->
+      <label for="portfolioName">Portfolio Name:</label>
+      <input type="text" id="portfolioName" required>
+
+      <!-- Initial Value -->
+      <label for="portfolioValue">Initial Value:</label>
+      <input type="number" id="portfolioValue" required>
+
+      <!-- Asset Type -->
+      <label for="assetType">Asset Type:</label>
+      <select id="assetType" required>
+        <option value="">Select Type</option>
+        <option value="Currency">Currency</option>
+        <option value="Stock">Stock</option>
+        <option value="Bond">Bond</option>
+        <option value="Fund">Fund</option>
+        <option value="Crypto">Crypto</option>
+      </select>
+
+      <!-- Transaction Type -->
+      <label for="transactionType">Transaction Type:</label>
+      <select id="transactionType" required>
+        <option value="">Select Transaction</option>
+        <option value="Buy">Buy In</option>
+        <option value="Sell">Sell Out</option>
+        <option value="Dividend">Dividend</option>
+      </select>
+
+      <!-- Date -->
+      <label for="transactionDate">Transaction Date:</label>
+      <input type="date" id="transactionDate" required>
+
+      <!-- Quantity -->
+      <label for="quantity">Quantity:</label>
+      <input type="number" id="quantity" step="0.01" required>
+
+      <!-- Submit -->
+      <button type="submit" class="submit-btn">Add Portfolio</button>
+    </form>
+  </div>
+</div>
+
+   <!-- Delete Portfolio Modal -->
+  <div id="deletePortfolioModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+      <h3>Delete Portfolio</h3>
+      <form id="deletePortfolioForm">
+        <label for="portfolioToDelete">Select Portfolio:</label>
+        <select id="portfolioToDelete" required></select>
+        <button type="submit" class="submit-btn delete-btn">Delete</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container">
+       <div class="sidebar" id="sidebar">
+            <!-- Net worth section is static, the rest will be generated dynamically -->
+            <div class="net-worth-section clickable" onclick="switchView('overview')">
+                <div class="net-worth-title">NET WORTH</div>
+                <div class="net-worth-amount" id="total">$0.00</div>
+                <div class="net-worth-change" id="totalPercent"></div>
+            </div>
+            <!-- Dynamic content will be injected here -->
+        </div>
+
+        <!-- VIEW 1: Main Overview Panel (from financial_test6) -->
+        <div class="right-panel" id="overview-panel">
+            <div class="carousel">
+                <button class="carousel-arrow left" onclick="prevSlide()">&#8249;</button>
+                <div class="carousel-inner" id="carouselInner">
+                    <div class="carousel-slide">
+                        <h3 class="chart-title">Portfolio Over Time</h3>
+                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
+                             <div class="controls" style="margin-top: -15px;">
+                                <label for="startDate">Start Date:</label>
+                                <input type="date" id="startDate" value="2025-05-20">
+                            </div>
+                          
+                                <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
+                                                                                 
+                                                                       
+                    </div>                      
+                    <div class="carousel-slide">
+                        <h3 class="chart-title">Cash Flow</h3>
+                        <div style="display:flex;justify-content:space-around;align-items:center;">
+                        <div class="donut-container">
+                        <div class="donut-chart">
+                            <div id="incomeChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
+                            <div style="text-align: center; margin-top: -50px;">
+                                <div style="font-weight: 600; color: #666;">INCOME</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #3498db;">$18,665</div>
+                            </div>
+                        </div>
+                        <div class="donut-chart">
+                            <div id="spendingChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
+                            <div style="text-align: center; margin-top: -50px;">
+                                <div style="font-weight: 600; color: #666;">SPENDING</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #e74c3c;">$42,500</div>
+                            </div>
+                        </div>
+                        </div>
+
+                        </div>
+                    </div>
+                    </div>
+               
+                <button class="carousel-arrow right" onclick="nextSlide()">&#8250;</button>
+            
+            </div>
+            <div class="three-columns">
+                <div class="market-section">
+                <h3 class="chart-title">Market Movers</h3>
+                <div class="market-indices">
+                    <div class="index-card"><div class="index-change positive">0.65%</div><div>S&P 500</div></div>
+                    <div class="index-card"><div class="index-change negative">-0.72%</div><div>DOW JONES</div></div>
+                    <div class="index-card"><div class="index-change positive">0.14%</div><div>NASDAQ</div></div>
+                    <div class="index-card"><div class="index-change negative">-2.36%</div><div>10 YR BOND</div></div>
+                </div>
+                </div>
+                <div class="market-section">
+                    <h3 class="holdings-title">Your Gainers</h3>
+                    <div id="gainers-list">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+                </div>
+                <div class="market-section">
+                    <h3 class="holdings-title">Your Losers</h3>
+                    <div id="losers-list">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-section">
+                <div class="insights">
+                <h3 class="insights-title">Insights</h3>
+                <div class="insight-item">Compared to our baseline portfolio, you are underweight in International Stocks by 8.04%.</div>
+                <div class="insight-item">You are currently paying over $360.54 per year in fees for mutual funds and ETFs.</div>
+                <div class="insight-item">You are projected to pay over $19,907.22 in 20 years in management fees.</div>
+                </div>
+                <div class="contact-section">
+                <h3 class="contact-title">Contact Us</h3>
+                <p>Email: support@codewhisper.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+                <h4 class="subscribe-title">Subscribe to Updates</h4>
+                <input type="email" placeholder="Enter your email" class="subscribe-input">
+                <button class="subscribe-btn">Subscribe</button>
+                <div class="copyright">© 2025 Code Whisper. All Rights Reserved.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: Asset Detail Panel (from ai_studio_code (5)) -->
+        <main class="main-content" id="detail-panel">
+            <!-- 头部信息现在是 main-content 的直接子元素，位于 grid 上方 -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title" id="asset-name">Tesla</h1>
+                <div class="net-worth-display">
+                    <div class="net-worth-main" id="asset-price">$1,234,567</div>
+                    <div class="net-worth-change" id="asset-change">Rise / Fall: +0.17%</div>
+                </div>
+            </div>
+
+            <!-- 网格布局现在位于 header 下方 -->
+            <div class="dashboard-grid">
+                <div class="left-column">
+                    
+                    <div class="chart-container">
+                         <div class="controls" style="margin-top: -5px;">
+                                <label for="detailStartDate">Start Date:</label>
+                                <input type="date" id="detailStartDate" value="2025-05-20">
+                            </div>
+                            
+                         <div id="assetDetailChart"  style="width: 100%; height: 400px;"></div> 
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Recent Transactions</h3>
+                        <table class="transaction-table">
+                            <thead><tr><th>Action</th><th>Price ($)</th><th>Quantity</th><th>Time</th></tr></thead>
+                            <tbody id="transaction-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="right-column">
+                    <div class="market-movers">
+                        <h3 class="chart-title">Related News</h3>
+                        <div class="news-list" id="news-list"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- CENTRALIZED SCRIPT ---
+
+        // 1. GLOBAL STATE
+        let allPortfolios = [];
+        let currentPortfolioIndex = 0;
+        let portfolioData = null; // Holds the *adapted* data for the current portfolio
+        let assetDetailChart = null;
+        let usd = 1000; // Base cash amount
+        let localPortfolios = []; // For the add/delete modal functionality
+
+        // --- 新增的全局变量 ---
+        let overviewChart = null; // ECharts instance for the overview chart
+        let _rawData = []; // To store historical price data from all_data.json
+
+        // 2. HELPER FUNCTIONS
+        function formatTimestamp(isoString) {
+            if (!isoString) return '';
+            return isoString.replace('T', ' ').replace(/-/g, '/').substring(0, 16);
+        }
+
+        // 3. DATA ADAPTER
+        /**
+         * Converts a single portfolio object from the JSON into the format
+         * used by the rendering functions (showAsset, initializePortfolio).
+         * @param {object} portfolio - A single portfolio object from the main data file.
+         * @returns {object} - Data formatted for internal use.
+         */
+        function adaptDataStructure(portfolio) {
+            const adaptedData = {};
+            if (!portfolio || !portfolio.holdings) return {};
+
+            portfolio.holdings.forEach(asset => {
+                const assetType = asset.assetType;
+                if (!adaptedData[assetType]) {
+                    adaptedData[assetType] = {};
+                }
+                adaptedData[assetType][asset.stockId] = {
+                    name: asset.assetName,
+                    price: asset.currentPrice,
+                    history: asset.currentPrice,
+                    changePercent: asset.changePercent,
+                    holding: asset.quantity,
+                    priceHistory: asset.priceHistory,
+                    news: asset.news,
+                    transactions: (asset.transactions || []).map(tx => ({
+                        action: tx.type.charAt(0).toUpperCase() + tx.type.slice(1),
+                        price: tx.price,
+                        quantity: tx.quantity,
+                        time: formatTimestamp(tx.timestamp)
+                    })).sort((a, b) => new Date(b.time) - new Date(a.time))
+
+                    
+                };
+            });
+            return adaptedData;
+        }
+
+        // 4. DYNAMIC UI BUILDERS
+        /**
+         * Populates the portfolio switching dropdown menu.
+         */
+        function updatePortfolioDropdown() {
+            const portfolioList = document.getElementById("portfolioList");
+            const currentPortfolioNameEl = document.getElementById("currentPortfolioName");
+            portfolioList.innerHTML = '';
+
+            if (allPortfolios.length === 0) {
+                portfolioList.innerHTML = '<div class="dropdown-item">No portfolios found</div>';
+                currentPortfolioNameEl.textContent = "Portfolios";
+                return;
+            }
+
+            // currentPortfolioNameEl.textContent = allPortfolios[currentPortfolioIndex].name;
+            currentPortfolioNameEl.textContent = "Portfolios";
+
+            allPortfolios.forEach((p, index) => {
+                const item = document.createElement("div");
+                item.className = "dropdown-item";
+                if (index === currentPortfolioIndex) {
+                    item.classList.add('active');
+                }
+                item.href = `#`;
+                item.textContent = p.name;
+                item.onclick = (e) => {
+                    e.preventDefault();
+                    if (index !== currentPortfolioIndex) {
+                        renderDashboard(index);
+                    }
+                };
+                portfolioList.appendChild(item);
+            });
+        }
+
+        /**
+         * Dynamically builds the sidebar based on the current portfolio's holdings.
+         * @param {object} portfolio - The currently active portfolio object.
+         */
+        function buildSidebar(portfolio) {
+            const sidebar = document.getElementById('sidebar');
+            const netWorthSection = sidebar.querySelector('.net-worth-section');
+            sidebar.innerHTML = ''; // Clear everything
+            sidebar.appendChild(netWorthSection); // Add back the net worth section
+
+            const holdingsByType = portfolio.holdings.reduce((acc, holding) => {
+                const type = holding.assetType === 'forex' ? 'cash' : holding.assetType;
+                if (!acc[type]) acc[type] = [];
+                acc[type].push(holding);
+                return acc;
+            }, {});
+
+
+            // 1. Always create CASH section
+            const cashSection = document.createElement('div');
+            cashSection.className = 'section cash-section'; // <-- Added specific class
+            cashSection.innerHTML = `
+                <div class="section-title" onclick="toggleSection('cash')">CASH</div>
+                <div class="section-content" id="cash-content">
+                    <div class="account-item">
+                        <div><div class="account-name"><b>USD</b></div></div>
+                        <div class="account-amount" id="usd"></div>
+                    </div>
+                </div>`;
+            const cashContent = cashSection.querySelector('#cash-content');
+
+            if (holdingsByType.cash) {
+                holdingsByType.cash.forEach(holding => {
+                    const item = document.createElement('div');
+                    item.className = 'account-item clickable';
+                    item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
+                    item.innerHTML = `
+                        <div>
+                            <div class="account-name">${holding.stockId}</div>
+                            <div class="account-details">${holding.assetName}</div>
+                        </div>
+                        <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
+                    cashContent.appendChild(item);
+                });
+            }
+            sidebar.appendChild(cashSection);
+            delete holdingsByType.cash;
+
+            // 2. Create other sections dynamically
+            Object.keys(holdingsByType).sort().forEach(type => {
+                const section = document.createElement('div');
+                section.className = `section ${type}-section`; // <-- Added type-specific class
+                const sectionContentId = `${type}-content`;
+                section.innerHTML = `
+                    <div class="section-title" onclick="toggleSection('${type}')">${type.toUpperCase()}</div>
+                    <div class="section-content" id="${sectionContentId}"></div>`;
+                const sectionContent = section.querySelector(`#${sectionContentId}`);
+
+                holdingsByType[type].forEach(holding => {
+                    const item = document.createElement('div');
+                    item.className = 'account-item clickable';
+                    item.setAttribute('onclick', `showAsset('${holding.assetType}', '${holding.stockId}')`);
+                    item.innerHTML = `
+                        <div>
+                            <div class="account-name">${holding.stockId}</div>
+                            <div class="account-details">${holding.assetName}</div>
+                        </div>
+                        <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>`;
+                    sectionContent.appendChild(item);
+                });
+                sidebar.appendChild(section);
+            });
+        }
+
+
+        // 5. CORE FUNCTIONALITY
+        function switchView(viewName) {
+            const overviewPanel = document.getElementById('overview-panel');
+            const detailPanel = document.getElementById('detail-panel');
+            if (viewName === 'overview') {
+                overviewPanel.style.display = 'block';
+                detailPanel.style.display = 'none';
+                if (overviewChart) overviewChart.resize(); // 确保图表在视图切换时调整大小
+            } else if (viewName === 'detail') {
+                overviewPanel.style.display = 'none';
+                detailPanel.style.display = 'flex';
+                detailPanel.style.flexDirection = 'column';
+                if (assetDetailChartInstance) assetDetailChartInstance.resize();
+            }
+        }
+    
+        let currentAssetName = null;
+        let assetDetailChartInstance = null;
+
+        function showAsset(assetType, symbol) {
+            if (!portfolioData || !portfolioData[assetType] || !portfolioData[assetType][symbol]) {
+                console.error("Asset not found:", assetType, symbol);
+                return;
+            }
+            const asset = portfolioData[assetType][symbol];
+            switchView('detail');
+
+            currentAssetName = symbol;
+
+            document.getElementById('asset-name').textContent = asset.name;
+            const priceDisplay = asset.price < 1 ? asset.price.toPrecision(4) : asset.price.toFixed(2);
+            document.getElementById('asset-price').textContent = `$${priceDisplay}`;
+
+            let changeEl = document.getElementById('asset-change');
+            let isPositive = asset.changePercent >= 0;
+            changeEl.textContent = `Rise / Fall: ${isPositive ? '+' : ''}${asset.changePercent.toFixed(2)}%`;
+            changeEl.classList.remove('positive', 'negative');
+            changeEl.classList.add(isPositive ? 'positive' : 'negative');
+
+            // Update detail chart
+            updateAssetDetailChartFromJson(symbol);
+           
+
+            const transactionTbody = document.getElementById('transaction-tbody');
+            transactionTbody.innerHTML = asset.transactions.map(tx =>
+                `<tr><td><span class="action-${tx.action.toLowerCase()}">${tx.action}</span></td><td>${tx.price.toFixed(2)}</td><td>${tx.quantity.toLocaleString()}</td><td>${tx.time}</td></tr>`
+            ).join('');
+
+            const newsList = document.getElementById('news-list');
+
+
+            newsList.innerHTML = asset.news.map(item =>
+                `<div class="news-item"><a href="${item.url}" target="_blank" rel="noopener noreferrer" class="news-title-link">${item.title}</a><div class="news-meta"><span class="news-source">${item.source}</span><span class="news-date">${item.date}</span></div></div>`
+            ).join('');
+            console.log("showAsset executed for", assetType, symbol);
+
+            
+        }
+        
+        
+
+        function updateAssetDetailChartFromJson(assetName) {
+            const startDateInput = document.getElementById('detailStartDate');
+            console.log("updateAssetDetailChartFromJson", startDateInput);
+            if (!startDateInput) return;
+                console.log("Container:", assetName);
+
+
+
+            const startDate = new Date(startDateInput.value);
+            console.log("updateAssetDetailChartFromJson", startDate , assetName);
+
+            $.get('data/all_data.json', function (rawData) {
+                const filtered = rawData
+                    .filter(d => d.name === assetName)
+                    .map(d => ({ ...d, dateObj: new Date(d.date) }))
+                    .filter(d => d.dateObj >= startDate)
+                    .sort((a, b) => a.dateObj - b.dateObj);
+
+                const seriesData = filtered.map(d => ({
+                    date: d.date,
+                    price: d.price
+                }));
+
+                updateAssetDetailChart(seriesData, assetName);
+            });
+        }
+
+// Chart update function
+        function updateAssetDetailChart(seriesData, assetName) {
+            
+            const container = document.getElementById('assetDetailChart');
+            if (!container) return;
+
+            if (assetDetailChartInstance != null) {
+                assetDetailChartInstance.dispose();
+            }
+
+            assetDetailChartInstance = echarts.init(container);
+
+            console.log("Container:", container);
+            console.log("SeriesData:", seriesData);
+
+            const option = {
+                animationDuration: 1000,
+                dataset: [{ id: 'dataset_raw', source: seriesData }],
+                xAxis: { type: 'category', name: 'Date', show: true },
+                yAxis: { name: 'Price', show: true },
+                tooltip: { trigger: 'axis' },
+                grid: { left: 30, right: 30, top: 40, bottom: 40 },
+                series: [{
+                    type: 'line',
+                    datasetId: 'dataset_raw',
+                    name: assetName,
+                    showSymbol: false,
+                    encode: { x: 'date', y: 'price', tooltip: ['price'] },
+                    lineStyle: { width: 3, color: '#3498db' },
+                    areaStyle: { color: 'rgba(52, 152, 219, 0.1)' },
+                    emphasis: { focus: 'series' },
+                    endLabel: {
+                        show: true,
+                        formatter: function (params) {
+                            return assetName + ': ' + params.data.price;
+                        }
+                    },
+                    labelLayout: { moveOverlap: 'shiftY' }
+                }]
+            };
+
+            assetDetailChartInstance.setOption(option);
+            window.addEventListener('resize', () => assetDetailChartInstance.resize());
+        }
+
+// Hook date selector to chart updater
+        document.addEventListener('DOMContentLoaded', () => {
+            const detailStartDateInput = document.getElementById('detailStartDate');
+            if (detailStartDateInput) {
+                detailStartDateInput.addEventListener('change', () => {
+                    if (currentAssetName) {
+                        updateAssetDetailChartFromJson(currentAssetName);
+                    }
+                });
+            }
+        });
+
+        function initializePortfolioValues() {
+            if (!portfolioData) return;
+            let totalValue = usd;
+            document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            for (const assetType in portfolioData) {
+                for (const symbol in portfolioData[assetType]) {
+                    const asset = portfolioData[assetType][symbol];
+                    const holdingValue = (asset.holding > 0 ? asset.holding : 0) * asset.price; // Ignore negative (short) positions for total
+                    totalValue += holdingValue;
+                    const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
+                    if (element) {
+                        element.textContent = `$${(asset.holding * asset.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    }
+                }
+            }
+            document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        function updateMarketMovers() {
+            if (!portfolioData) return;
+
+            const gainersListEl = document.getElementById('gainers-list');
+            const losersListEl = document.getElementById('losers-list');
+            gainersListEl.innerHTML = ''; 
+            losersListEl.innerHTML = '';
+
+            let allAssets = [];
+            for (const assetType in portfolioData) {
+                for (const symbol in portfolioData[assetType]) {
+                    const asset = portfolioData[assetType][symbol];
+                    if (asset.price != null && asset.changePercent != null && asset.holding > 0) {
+                        const changeAmount = asset.price * (asset.changePercent / 100) * asset.holding;
+                        allAssets.push({
+                            name: asset.name,
+                            changePercent: asset.changePercent,
+                            changeAmount: changeAmount
+                        });
+                    }
+                }
+            }
+
+            const gainers = allAssets.filter(a => a.changeAmount > 0).sort((a, b) => b.changeAmount - a.changeAmount);
+            const losers = allAssets.filter(a => a.changeAmount < 0).sort((a, b) => a.changeAmount - b.changeAmount);
+
+            const topGainers = gainers.slice(0, 3);
+            const topLosers = losers.slice(0, 3);
+
+            if (topGainers.length > 0) {
+                topGainers.forEach(asset => {
+                    gainersListEl.innerHTML += `<div class="holding-item"><span>${asset.name}</span><span class="positive">+${asset.changePercent.toFixed(2)}%</span></div>`;
+                });
+            } else {
+                gainersListEl.innerHTML = '<div class="holding-item"><span>No gainers today.</span></div>';
+            }
+
+            if (topLosers.length > 0) {
+                topLosers.forEach(asset => {
+                    losersListEl.innerHTML += `<div class="holding-item"><span>${asset.name}</span><span class="negative">${asset.changePercent.toFixed(2)}%</span></div>`;
+                });
+            } else {
+                losersListEl.innerHTML = '<div class="holding-item"><span>No losers today.</span></div>';
+            }
+        }
+
+        // --- 核心修改部分 ---
+
+        /**
+         * [新增] 1. 计算投资组合的历史总价值
+         * @param {Array} holdings - 当前投资组合的持仓列表 (e.g., [{stockId: 'TSLA', quantity: 10}, ...])
+         * @param {Array} allPriceData - 所有资产的历史价格 (来自 all_data.json)
+         * @returns {Array} - 一个包含每日总价值的数组 (e.g., [{date: '2023-01-01', value: 150000}, ...])
+         */
+        function calculatePortfolioHistory(holdings, allPriceData) {
+            if (!holdings || holdings.length === 0 || !allPriceData || allPriceData.length === 0) {
+                return [];
+            }
+            
+            const holdingQuantities = holdings.reduce((acc, h) => {
+                acc[h.stockId] = h.quantity;
+                return acc;
+            }, {});
+
+            const portfolioAssetSymbols = Object.keys(holdingQuantities);
+
+            // 改进：先按日期排序原始数据
+            const sortedPriceData = allPriceData
+                .filter(dataPoint => portfolioAssetSymbols.includes(dataPoint.name))
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // 按日期分组
+            const pricesByDate = sortedPriceData.reduce((acc, dataPoint) => {
+                if (!acc[dataPoint.date]) {
+                    acc[dataPoint.date] = {};
+                }
+                acc[dataPoint.date][dataPoint.name] = dataPoint.price;
+                return acc;
+            }, {});
+
+            const portfolioHistory = [];
+            const dates = Object.keys(pricesByDate).sort(); // 确保日期顺序
+
+            for (const date of dates) {
+                let dailyTotalValue = usd || 1000; // 防止 usd 未定义
+                let hasAllPrices = true;
+                
+                for (const symbol of portfolioAssetSymbols) {
+                    const price = pricesByDate[date][symbol];
+                    const quantity = holdingQuantities[symbol];
+
+                    if (price !== undefined && quantity !== undefined) {
+                        dailyTotalValue += price * quantity;
+                    } else {
+                        hasAllPrices = false;
+                        break;
+                    }
+                }
+
+                // 只添加有完整价格数据的日期
+                if (hasAllPrices) {
+                    portfolioHistory.push({ 
+                        date: date, 
+                        value: dailyTotalValue,
+                        dateObj: new Date(date) // 预计算日期对象
+                    });
+                }
+            }
+
+            return portfolioHistory;
+        }
+
+        /**
+         * [修复] 改进的概览图表更新函数
+         */
+        function updateOverviewChart() {
+            console.log('updateOverviewChart called'); // 调试日志
+            
+            if (!overviewChart || _rawData.length === 0) {
+                console.log('Chart or data not ready');
+                return;
+            }
+            
+            const currentPortfolio = allPortfolios[currentPortfolioIndex];
+            const portfolioId = `${currentPortfolioIndex}_${currentPortfolio.name}`;
+            
+            // 检查是否需要重新计算历史数据
+            if (currentPortfolioId !== portfolioId || !portfolioHistoryCache) {
+                console.log('Recalculating portfolio history');
+                portfolioHistoryCache = calculatePortfolioHistory(currentPortfolio.holdings, _rawData);
+                currentPortfolioId = portfolioId;
+            }
+
+            // 获取过滤日期
+            const startDateInput = document.getElementById('startDate');
+            if (!startDateInput) {
+                console.error('Start date input not found');
+                return;
+            }
+            
+            const startDate = new Date(startDateInput.value);
+            console.log('Filter date:', startDate);
+
+            // 过滤数据 - 使用预计算的日期对象
+            const filteredData = portfolioHistoryCache.filter(d => d.dateObj >= startDate);
+            console.log('Filtered data points:', filteredData.length);
+
+            if (filteredData.length === 0) {
+                console.log('No data after filtering');
+                overviewChart.clear();
+                return;
+            }
+            
+            // 准备图表数据
+            const chartData = filteredData.map(item => ({
+                date: item.date,
+                value: item.value
+            }));
+
+            // 计算数值范围以优化Y轴
+            const values = chartData.map(d => d.value);
+            const minValue = Math.min(...values);
+            const maxValue = Math.max(...values);
+            const padding = (maxValue - minValue) * 0.1; // 10% 填充
+
+            // 更新图表配置 - 不使用 true 参数
+            const option = {
+                animationDuration: 1000, // 减少动画时间
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        const data = params[0];
+                        return `${data.axisValueLabel}<br/>Value: $${data.value.toLocaleString('en-US', { 
+                            minimumFractionDigits: 2, 
+                            maximumFractionDigits: 2 
+                        })}`;
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: chartData.map(item => item.date),
+                    axisLabel: {
+                        rotate: 45, // 旋转日期标签避免重叠
+                        fontSize: 12
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'Total Value ($USD)',
+                    min: Math.max(0, minValue - padding), // 设置合理的最小值
+                    max: maxValue + padding,
+                    axisLabel: {
+                        formatter: function(value) {
+                            if (value >= 1000000) {
+                                return '$' + (value / 1000000).toFixed(1) + 'M';
+                            } else if (value >= 1000) {
+                                return '$' + (value / 1000).toFixed(0) + 'K';
+                            }
+                            return '$' + value.toFixed(0);
+                        }
+                    },
+                    scale: true
+                },
+                grid: {
+                    left: 80,
+                    right: 30,
+                    top: 60,
+                    bottom: 80 // 增加底部空间容纳旋转的标签
+                },
+                series: [{
+                    name: 'Portfolio Value',
+                    type: 'line',
+                    data: chartData.map(item => item.value),
+                    showSymbol: false,
+                    smooth: true,
+                    lineStyle: {
+                        width: 3,
+                        color: '#3498db'
+                    },
+                    areaStyle: {
+                        opacity: 0.15,
+                        color: 'rgba(52, 152, 219, 0.1)'
+                    }
+                }]
+            };
+
+            // 使用 notMerge: false 来更新而非替换配置
+            overviewChart.setOption(option, false);
+            console.log('Chart updated successfully');
+        }
+
+
+        // 6. MAIN RENDER & INITIALIZATION
+        /**
+         * This is the main function to render the entire dashboard for a given portfolio.
+         * @param {number} portfolioIndex - The index of the portfolio to render.
+         */
+        function renderDashboard(portfolioIndex) {
+            currentPortfolioIndex = portfolioIndex;
+            const activePortfolio = allPortfolios[portfolioIndex];
+
+            portfolioData = adaptDataStructure(activePortfolio);
+
+            buildSidebar(activePortfolio);
+            updatePortfolioDropdown();
+            initializePortfolioValues();
+            updateMarketMovers();
+            switchView('overview');
+            // 清除缓存以强制重新计算
+            portfolioHistoryCache = null;
+            currentPortfolioId = null;
+            
+            // 延迟更新图表以确保DOM已准备好
+            setTimeout(() => {
+                updateOverviewChart();
+            }, 100);
+        }
+
+        /**
+         * Contains setup code that runs AFTER the data is loaded.
+         */
+        function initializeApp() {
+            // [修改] 初始化概览图表的 ECharts 实例
+            const chartDom = document.getElementById('overviewNetWorthChart');
+            overviewChart = echarts.init(chartDom);
+            
+            // 为 ECharts 实例添加 resize 监听器
+            window.addEventListener('resize', () => {
+                if (overviewChart) overviewChart.resize();
+            });
+
+            // [修改] 获取所有历史价格数据并存储到全局变量
+            $.get('data/all_data.json', function (data) {
+                _rawData = data; // 存储原始数据
+                
+                // 数据加载完成后，渲染第一个投资组合
+                renderDashboard(0);
+                // [修改] 日期选择器现在只触发图表更新，不再处理复杂逻辑
+                document.getElementById('startDate').addEventListener('change', updateOverviewChart);
+            });
+            
+            
+            
+                        
+            /*const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+                new Chart(incomeCtx, { type: 'doughnut', data: { datasets: [{ data: [18665, 5000], backgroundColor: ['#2ecc71', '#ecf0f1'], cutout: '70%' }] }, options: { plugins: { legend: { display: false } } } });
+                const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+                new Chart(spendingCtx, { type: 'doughnut', data: { datasets: [{ data: [42500, 10000], backgroundColor: ['#e74c3c', '#ecf0f1'], cutout: '70%' }] }, options: { plugins: { legend: { display: false } } } });
+            */
+            const incomeCtx = document.getElementById('incomeChart');
+            var incomeChart = echarts.init(incomeCtx);
+            var option;
+
+            $.get('data/income_source.json', function (pieData) {
+                const option = {
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        top: '5%',
+                        left: 'center'
+                    },
+                    series: [
+                    {
+                        name: 'Income',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center',
+                            textStyle: {
+                                color: '#666'  // 替换为你想要的颜色
+                            }
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 40,
+                                fontWeight: 'bold',
+                                color: '#666'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: pieData // ✅ 从外部加载的数据
+                    }
+                    ]
+                };
+
+                incomeChart.setOption(option);
+                incomeChart.resize(); // optional
+
+            });
+    
+             // Chart.js doughnut charts initialization for spending
+            const spendingCtx = document.getElementById('spendingChart');            
+            var spendingChart = echarts.init(spendingCtx);
+            var option;
+
+            $.get('data/spending_source.json', function (pieData) {
+                const colorList = ['#EE6666', '#73C0DE', '#3BA272','#5470C6', '#91CC75', '#FAC858'];
+
+
+                // 给每个数据项按顺序分配颜色
+                pieData.forEach((item, index) => {
+                    item.itemStyle = {
+                    color: colorList[index % colorList.length]  // 防止越界循环使用
+                    };
+                });
+                const option = {
+                
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        top: '5%',
+                        left: 'center',
+                        textStyle: {
+                            color: '#666'  // 替换为你想要的颜色
+                        }
+                    },
+                    series: [
+                    {
+                        name: 'Spending',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: 30,
+                                fontWeight: 'bold',
+                                color: '#666'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: pieData // ✅ 从外部加载的数据
+                    }
+                  ]
+                };
+
+            spendingChart.setOption(option);
+            spendingChart.resize(); // optional
+
+            });
+
+ 
+            // Initialize Modal event listeners
+            document.getElementById("addPortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const name = document.getElementById("portfolioName").value; const value = document.getElementById("portfolioValue").value; if (name && value) { localPortfolios.push({ name, value }); closeModal(); this.reset(); } });
+            document.getElementById("deletePortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const index = document.getElementById("portfolioToDelete").value; if (index !== null && index < localPortfolios.length) { localPortfolios.splice(index, 1); closeDeleteModal(); } });
+        }
+
+
+        // 7. PAGE LOAD & UTILITY FUNCTIONS
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('data/portfolios.json')
+                .then(response => { if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } return response.json(); })
+                .then(jsonData => {
+                    allPortfolios = jsonData.portfolios;
+                    if (!allPortfolios || allPortfolios.length === 0) {
+                        document.getElementById('sidebar').innerHTML = "<h1>No portfolio data found.</h1>";
+                        return;
+                    }
+                    initializeApp();
+                })
+                .catch(error => {
+                    console.error("Could not load or parse portfolio data:", error);
+                    document.body.innerHTML = `<div style="text-align: center; padding: 50px; font-family: sans-serif;"><h1>Error</h1><p>Could not load portfolio data. Please check the console for details.</p></div>`;
+                });
+        });
+
+        let interval_1; //定义定时对象
+        function startCounter() {
+        interval_1 = setInterval(() => {
+            let totalValue = usd; //人为设定的usd持有量
+            let totalHistory = usd;
+            document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            for (const assetType in portfolioData) {
+                for (const symbol in portfolioData[assetType]) {
+                    // console.log(assetType , symbol);///
+                    if(assetType == "stock") {
+                    // 先联通外网才能写下去//
+                    let stock_url = `http://localhost:3088/currentStock/${symbol}`;
+                    fetch(stock_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Stock ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        portfolioData[assetType][symbol].changePercent = (data - portfolioData[assetType][symbol].history)/portfolioData[assetType][symbol].history*100
+
+                        // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else if(assetType == 'etf'){
+                    let fund_url = `http://localhost:3088/currentFund/${symbol}`;
+                    fetch(fund_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Fund ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        portfolioData[assetType][symbol].changePercent = (data - portfolioData[assetType][symbol].history)/portfolioData[assetType][symbol].history*100
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else if(assetType == 'forex' ){
+                    let forex_url = `http://localhost:3088/currentExchange/${symbol}`;
+                    fetch(forex_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Forex ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        portfolioData[assetType][symbol].changePercent = (data - portfolioData[assetType][symbol].history)/portfolioData[assetType][symbol].history*100
+                        // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else if(assetType == 'crypto'){
+                    let crypto_url = `http://localhost:3088/currentCrypto/${symbol}`;
+                    fetch(crypto_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Crypto ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        portfolioData[assetType][symbol].changePercent = (data - portfolioData[assetType][symbol].history)/portfolioData[assetType][symbol].history*100
+                        // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else{
+                    console.log("Wrong portfolio type! Go check your portfolio definition!"+symbol+assetType);
+                    }
+                    const asset = portfolioData[assetType][symbol];
+                    const holdingValue = asset.holding * asset.price;
+                    totalValue += holdingValue;
+                    totalHistory += asset.holding * asset.history;
+                    const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
+                    if (element) {
+                        element.textContent = `$${holdingValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    }
+                }
+            }
+            document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            let percent = (totalValue - totalHistory)/totalHistory * 100;
+            document.getElementById('totalPercent').textContent = `${percent}%`
+
+        }, 10000); // Update every 10 second
+        }
+
+        function stopCounter() {
+        clearInterval(interval_1);
+        }
+
+        startCounter();
+
+        function toggleSection(sectionId) { document.getElementById(sectionId + '-content').classList.toggle('collapsed'); }
+        let currentSlide = 0;
+        function showSlide(index) { const carouselInner = document.getElementById('carouselInner'); const totalSlides = carouselInner.children.length; currentSlide = (index + totalSlides) % totalSlides; carouselInner.style.transform = 'translateX(' + (-currentSlide * 100) + '%)'; }
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+        function openModal() { document.getElementById('addPortfolioModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('addPortfolioModal').style.display = 'none'; }
+        function openDeleteModal() { const select = document.getElementById("portfolioToDelete"); select.innerHTML = ''; localPortfolios.forEach((p, index) => { const option = document.createElement("option"); option.value = index; option.textContent = `${p.name} - $${parseFloat(p.value).toLocaleString()}`; select.appendChild(option); }); document.getElementById("deletePortfolioModal").style.display = "flex"; }
+        function closeDeleteModal() { document.getElementById("deletePortfolioModal").style.display = "none"; }
+ 
+
+    </script>
+</body>
+</html>

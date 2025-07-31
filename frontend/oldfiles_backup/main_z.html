@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Adding necessary styles for functionality */
+    .clickable { cursor: pointer; transition: background-color 0.2s; }
+    .clickable:hover { background-color: #f0f0f02c; }
+    #detail-panel { display: none; }
+    .dropdown-menu .dropdown-item { cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .dropdown-menu .dropdown-item.active { font-weight: bold; background-color: #f0f0f02c; }
+    .section-content.collapsed { display: none; }
+    .section-title { cursor: pointer; }
+    .delete-portfolio-btn {
+        color: #e74c3c;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 16px;
+        line-height: 1;
+        visibility: hidden; /* Hide by default */
+    }
+    .dropdown-item:hover .delete-portfolio-btn {
+        visibility: visible; /* Show on hover */
+        background-color: #ddd;
+    }
+    .add-new-item {
+      font-style: italic;
+      color: #3498db;
+      text-align: center;
+      padding-top: 5px;
+      border-top: 1px solid #eee;
+    }
+
+    /* --- START: Styles for Buy/Sell Buttons and Transaction Modal --- */
+    .account-item-container {
+        padding: 10px 15px;
+        border-bottom: 1px solid #444; /* Darker border for dark theme */
+    }
+    /* The original .account-item is now just the top, clickable part */
+    .account-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end; /* Align buttons to the right */
+        gap: 10px; /* Space between buttons */
+        padding-top: 8px; /* Space above buttons */
+    }
+    .transaction-btn {
+        padding: 4px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        color: white;
+        font-size: 12px;
+        transition: background-color 0.2s;
+    }
+    .transaction-btn.buy {
+        background-color: #27ae60; /* Green */
+    }
+    .transaction-btn.buy:hover {
+        background-color: #2ecc71;
+    }
+    .transaction-btn.sell {
+        background-color: #c0392b; /* Red */
+    }
+    .transaction-btn.sell:hover {
+        background-color: #e74c3c;
+    }
+    /* --- END: Styles for Buy/Sell Buttons --- */
+
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="logo">
+      <img src="image/team_logo.png" alt="Code Whisper Logo">
+    </div>
+    <div class="nav-links">
+      <div class="dropdown">
+        <a href="#" class="dropdown-toggle" id="currentPortfolioName">Portfolios</a>
+        <div class="dropdown-menu" id="portfolioList">
+          <div class="dropdown-item">Loading...</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <input type="text" placeholder="Search..." class="search-bar">
+    </div>
+  </nav>
+
+<!-- Add Portfolio Modal -->
+<div id="addPortfolioModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('addPortfolioModal')">×</span>
+    <h3>Add New Portfolio</h3>
+    <form id="addPortfolioForm">
+      <label for="newPortfolioName">Portfolio Name:</label>
+      <input type="text" id="newPortfolioName" required>
+      <button type="submit" class="submit-btn">Add Portfolio</button>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deletePortfolioModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('deletePortfolioModal')">×</span>
+    <h3>Confirm Deletion</h3>
+    <p>Are you sure you want to delete the portfolio: "<b id="portfolioNameToDelete"></b>"?</p>
+    <p>This action cannot be undone.</p>
+    <div id="deleteConfirmButtons">
+      <!-- The confirm button will be set by JavaScript -->
+    </div>
+  </div>
+</div>
+
+<!-- START: Generic Transaction Modal -->
+<div id="transactionModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('transactionModal')">×</span>
+    <h3 id="transaction-title">Transaction</h3>
+    <form id="transactionForm">
+      <!-- Hidden fields to store context -->
+      <input type="hidden" id="transactionStockId">
+      <input type="hidden" id="transactionType">
+      
+      <label for="transactionAmount">买入/卖出金额 ($):</label>
+      <input type="number" id="transactionAmount" required placeholder="例如: 500.00" step="any" min="0">
+      
+      <label for="transactionDate">日期:</label>
+      <input type="date" id="transactionDate" required>
+      
+      <button type="submit" class="submit-btn">提交</button>
+    </form>
+  </div>
+</div>
+<!-- END: Generic Transaction Modal -->
+
+
+  <div class="container">
+       <div class="sidebar" id="sidebar">
+            <!-- Net worth section is static, the rest will be generated dynamically -->
+            <div class="net-worth-section clickable" onclick="switchView('overview')">
+                <div class="net-worth-title">NET WORTH</div>
+                <div class="net-worth-amount" id="total">$0.00</div>
+            </div>
+            <!-- Dynamic content will be injected here -->
+        </div>
+
+        <!-- VIEW 1: Main Overview Panel (from financial_test6) -->
+        <div class="right-panel" id="overview-panel">
+            <div class="carousel">
+                <button class="carousel-arrow left" onclick="prevSlide()">‹</button>
+                <div class="carousel-inner" id="carouselInner">
+                    <div class="carousel-slide">
+                        <h3 class="chart-title">Stock Price Over Time</h3>
+                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
+                             <div class="controls" style="margin-top: -15px;">
+                                <label for="startDate">Start Date:</label>
+                                <input type="date" id="startDate" value="2025-05-20">
+                            </div>
+                          
+                                <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
+                                                                                 
+                                                                       
+                    </div>                      
+                    <div class="carousel-slide">
+                        <h3 class="chart-title">Cash Flow</h3>
+                        <div style="display:flex;justify-content:space-around;align-items:center;">
+                        <div class="donut-container">
+                        <div class="donut-chart">
+                            <div id="incomeChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
+                            <div style="text-align: center; margin-top: -50px;">
+                                <div style="font-weight: 600; color: #666;">INCOME</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #3498db;">$18,665</div>
+                            </div>
+                        </div>
+                        <div class="donut-chart">
+                            <div id="spendingChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
+                            <div style="text-align: center; margin-top: -50px;">
+                                <div style="font-weight: 600; color: #666;">SPENDING</div>
+                                <div style="font-size: 20px; font-weight: 700; color: #e74c3c;">$42,500</div>
+                            </div>
+                        </div>
+                        </div>
+
+                        </div>
+                    </div>
+                    </div>
+               
+                <button class="carousel-arrow right" onclick="nextSlide()">›</button>
+            
+            </div>
+            <div class="three-columns">
+                <div class="market-section">
+                <h3 class="chart-title">Market Movers</h3>
+                <div class="market-indices">
+                    <div class="index-card"><div class="index-change positive">0.65%</div><div>S&P 500</div></div>
+                    <div class="index-card"><div class="index-change negative">-0.72%</div><div>DOW JONES</div></div>
+                    <div class="index-card"><div class="index-change positive">0.14%</div><div>NASDAQ</div></div>
+                    <div class="index-card"><div class="index-change negative">-2.36%</div><div>10 YR BOND</div></div>
+                </div>
+                </div>
+                <div class="market-section">
+                    <h3 class="holdings-title">Your Gainers</h3>
+                    <div id="gainers-list">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+                </div>
+                <div class="market-section">
+                    <h3 class="holdings-title">Your Losers</h3>
+                    <div id="losers-list">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-section">
+                <div class="insights">
+                <h3 class="insights-title">Insights</h3>
+                <div class="insight-item">Compared to our baseline portfolio, you are underweight in International Stocks by 8.04%.</div>
+                <div class="insight-item">You are currently paying over $360.54 per year in fees for mutual funds and ETFs.</div>
+                <div class="insight-item">You are projected to pay over $19,907.22 in 20 years in management fees.</div>
+                </div>
+                <div class="contact-section">
+                <h3 class="contact-title">Contact Us</h3>
+                <p>Email: support@codewhisper.com</p>
+                <p>Phone: +1 (555) 123-4567</p>
+                <h4 class="subscribe-title">Subscribe to Updates</h4>
+                <input type="email" placeholder="Enter your email" class="subscribe-input">
+                <button class="subscribe-btn">Subscribe</button>
+                <div class="copyright">© 2025 Code Whisper. All Rights Reserved.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: Asset Detail Panel (from ai_studio_code (5)) -->
+        <main class="main-content" id="detail-panel">
+            <!-- 头部信息现在是 main-content 的直接子元素，位于 grid 上方 -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title" id="asset-name">Tesla</h1>
+                <div class="net-worth-display">
+                    <div class="net-worth-main" id="asset-price">$1,234,567</div>
+                    <div class="net-worth-change" id="asset-change">Rise / Fall: +0.17%</div>
+                </div>
+            </div>
+
+            <!-- 网格布局现在位于 header 下方 -->
+            <div class="dashboard-grid">
+                <div class="left-column">
+                    
+                    <div class="chart-container">
+                         <div class="controls" style="margin-top: -5px;">
+                                <label for="detailStartDate">Start Date:</label>
+                                <input type="date" id="detailStartDate" value="2025-05-20">
+                            </div>
+                            
+                         <div id="assetDetailChart"  style="width: 100%; height: 400px;"></div> 
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Recent Transactions</h3>
+                        <table class="transaction-table">
+                            <thead><tr><th>Action</th><th>Price ($)</th><th>Quantity</th><th>Time</th></tr></thead>
+                            <tbody id="transaction-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="right-column">
+                    <div class="market-movers">
+                        <h3 class="chart-title">Related News</h3>
+                        <div class="news-list" id="news-list"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let allPortfolios = [];
+        let currentPortfolioIndex = 0;
+        let portfolioData = null; // Holds the *adapted* data for the current portfolio
+        let assetDetailChart = null;
+        let usd = 1000; // Base cash amount
+        // REMOVED: let localPortfolios = [];
+
+        function formatTimestamp(isoString) {
+            if (!isoString) return '';
+            return isoString.replace('T', ' ').replace(/-/g, '/').substring(0, 16);
+        }
+
+        function adaptDataStructure(portfolio) {
+            const adaptedData = {};
+            if (!portfolio || !portfolio.holdings) return {};
+
+            portfolio.holdings.forEach(asset => {
+                const assetType = asset.assetType;
+                if (!adaptedData[assetType]) {
+                    adaptedData[assetType] = {};
+                }
+                adaptedData[assetType][asset.stockId] = {
+                    name: asset.assetName,
+                    price: asset.currentPrice,
+                    changePercent: asset.changePercent,
+                    holding: asset.quantity,
+                    priceHistory: asset.priceHistory,
+                    news: asset.news,
+                    transactions: (asset.transactions || []).map(tx => ({
+                        action: tx.type.charAt(0).toUpperCase() + tx.type.slice(1),
+                        price: tx.price,
+                        quantity: tx.quantity,
+                        time: formatTimestamp(tx.timestamp)
+                    })).sort((a, b) => new Date(b.time) - new Date(a.time))
+                };
+            });
+            return adaptedData;
+        }
+
+        // --- START OF REVISED PORTFOLIO MANAGEMENT LOGIC ---
+
+        function updatePortfolioDropdown() {
+            const portfolioList = document.getElementById("portfolioList");
+            const currentPortfolioNameEl = document.getElementById("currentPortfolioName");
+            portfolioList.innerHTML = ''; // Clear current list
+
+            if (allPortfolios.length === 0) {
+                currentPortfolioNameEl.textContent = "No Portfolios";
+            } else {
+                currentPortfolioNameEl.textContent = "Portfolios";
+            }
+
+            allPortfolios.forEach((p, index) => {
+                const item = document.createElement("div");
+                item.className = "dropdown-item";
+                if (index === currentPortfolioIndex) {
+                    item.classList.add('active');
+                }
+                
+                // Portfolio name part, clickable to switch
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = p.name;
+                nameSpan.style.flexGrow = "1"; // Make name take available space
+                nameSpan.onclick = (e) => {
+                    e.stopPropagation(); // Prevent delete from triggering
+                    if (index !== currentPortfolioIndex) {
+                        renderDashboard(index);
+                    }
+                };
+
+                // Delete button part
+                const deleteBtn = document.createElement("span");
+                deleteBtn.className = "delete-portfolio-btn";
+                deleteBtn.innerHTML = "×"; // 'x' symbol
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation(); // Prevent switch from triggering
+                    openDeleteConfirmation(index);
+                };
+
+                item.appendChild(nameSpan);
+                item.appendChild(deleteBtn);
+                portfolioList.appendChild(item);
+            });
+
+            // Add the "Add New" button at the end
+            const addItem = document.createElement("div");
+            addItem.className = "dropdown-item add-new-item";
+            addItem.textContent = "+ Add New Portfolio";
+            addItem.onclick = () => openModal('addPortfolioModal');
+            portfolioList.appendChild(addItem);
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function handleAddPortfolio(event) {
+            event.preventDefault();
+            const input = document.getElementById("newPortfolioName");
+            const newName = input.value.trim();
+
+            if (newName && !allPortfolios.some(p => p.name.toLowerCase() === newName.toLowerCase())) {
+                const newPortfolio = {
+                    name: newName,
+                    holdings: [] // Create a new portfolio with no holdings
+                };
+                allPortfolios.push(newPortfolio);
+                
+                input.value = ''; // Reset form
+                closeModal('addPortfolioModal');
+                renderDashboard(allPortfolios.length - 1); // Switch to the new portfolio
+            } else if (!newName) {
+                alert("Portfolio name cannot be empty.");
+            } else {
+                alert("A portfolio with this name already exists.");
+            }
+        }
+
+        function openDeleteConfirmation(index) {
+            const portfolio = allPortfolios[index];
+            if (!portfolio) return;
+
+            document.getElementById('portfolioNameToDelete').textContent = portfolio.name;
+            
+            const confirmButtonsDiv = document.getElementById('deleteConfirmButtons');
+            confirmButtonsDiv.innerHTML = `
+                <button class="submit-btn delete-btn" onclick="deletePortfolio(${index})">Delete</button>
+                <button class="submit-btn" onclick="closeModal('deletePortfolioModal')">Cancel</button>
+            `;
+            
+            openModal('deletePortfolioModal');
+        }
+
+        function deletePortfolio(index) {
+            allPortfolios.splice(index, 1);
+            closeModal('deletePortfolioModal');
+            
+            if (currentPortfolioIndex >= index) {
+                currentPortfolioIndex = Math.max(0, allPortfolios.length - 1);
+            }
+
+            if (allPortfolios.length > 0) {
+                renderDashboard(currentPortfolioIndex);
+            } else {
+                portfolioData = {};
+                buildSidebar({ name: "None", holdings: [] });
+                updatePortfolioDropdown();
+                initializePortfolioValues();
+                updateMarketMovers();
+                switchView('overview');
+                document.getElementById('total').textContent = '$0.00';
+                document.getElementById('gainers-list').innerHTML = 'No portfolios to display.';
+                document.getElementById('losers-list').innerHTML = '';
+            }
+        }
+
+
+        // --- MODIFIED: Functions for the new transaction modal ---
+        function openTransactionModal(type, stockId) {
+            const typeText = type === 'Buy' ? '买入' : '卖出';
+            document.getElementById('transaction-title').textContent = `${typeText} ${stockId}`;
+            document.getElementById('transactionStockId').value = stockId;
+            document.getElementById('transactionType').value = type;
+            
+            // Set current date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('transactionDate').value = today;
+
+            // Clear previous amount
+            document.getElementById('transactionAmount').value = '';
+
+            openModal('transactionModal');
+        }
+
+        function handleTransactionSubmit(event) {
+            event.preventDefault(); // Prevent actual form submission for this demo
+            const stockId = document.getElementById('transactionStockId').value;
+            const type = document.getElementById('transactionType').value;
+            const amount = document.getElementById('transactionAmount').value;
+            const date = document.getElementById('transactionDate').value;
+
+            // In a real app, you would send this data to a server
+            alert(`表单已提交 (仅为演示):\n类型: ${type}\n资产: ${stockId}\n金额: $${amount}\n日期: ${date}`);
+
+            closeModal('transactionModal');
+        }
+        // --- END of new functions ---
+
+
+        /**
+         * MODIFIED: Dynamically builds the sidebar based on the current portfolio's holdings.
+         * @param {object} portfolio - The currently active portfolio object.
+         */
+        function buildSidebar(portfolio) {
+             const sidebar = document.getElementById('sidebar');
+             const netWorthSection = sidebar.querySelector('.net-worth-section');
+             sidebar.innerHTML = ''; // Clear everything
+             sidebar.appendChild(netWorthSection); // Add back the net worth section
+
+             const holdingsByType = portfolio.holdings.reduce((acc, holding) => {
+                const type = holding.assetType === 'forex' ? 'cash' : holding.assetType;
+                if (!acc[type]) acc[type] = [];
+                acc[type].push(holding);
+                return acc;
+            }, {});
+
+
+            // 1. Always create CASH section (without buy/sell buttons)
+             const cashSection = document.createElement('div');
+             cashSection.className = 'section cash-section';
+             cashSection.innerHTML = `
+                <div class="section-title" onclick="toggleSection('cash')">CASH</div>
+                <div class="section-content" id="cash-content">
+                    <div class="account-item">
+                        <div><div class="account-name"><b>USD</b></div></div>
+                        <div class="account-amount" id="usd"></div>
+                    </div>
+                </div>`;
+            sidebar.appendChild(cashSection);
+            delete holdingsByType.cash; // Remove cash so it's not processed again
+
+            // 2. Create other sections dynamically WITH buy/sell buttons
+            Object.keys(holdingsByType).sort().forEach(type => {
+                const section = document.createElement('div');
+                section.className = `section ${type}-section`;
+                const sectionContentId = `${type}-content`;
+                section.innerHTML = `
+                    <div class="section-title" onclick="toggleSection('${type}')">${type.toUpperCase()}</div>
+                    <div class="section-content" id="${sectionContentId}"></div>`;
+                const sectionContent = section.querySelector(`#${sectionContentId}`);
+
+                holdingsByType[type].forEach(holding => {
+                    const item = document.createElement('div');
+                    // This container holds both the clickable info and the action buttons
+                    item.className = 'account-item-container'; 
+                    item.innerHTML = `
+                        <div class="account-item clickable" onclick="showAsset('${holding.assetType}', '${holding.stockId}')">
+                            <div>
+                                <div class="account-name">${holding.stockId}</div>
+                                <div class="account-details">${holding.assetName}</div>
+                            </div>
+                            <div class="account-amount" id="${holding.stockId.toLowerCase()}-holding-value"></div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="transaction-btn buy" onclick="openTransactionModal('Buy', '${holding.stockId}')">Buy</button>
+                            <button class="transaction-btn sell" onclick="openTransactionModal('Sell', '${holding.stockId}')">Sell</button>
+                        </div>
+                    `;
+                    sectionContent.appendChild(item);
+                });
+                sidebar.appendChild(section);
+            });
+        }
+
+
+        // 5. CORE FUNCTIONALITY
+        function switchView(viewName) {
+            const overviewPanel = document.getElementById('overview-panel');
+            const detailPanel = document.getElementById('detail-panel');
+            if (viewName === 'overview') {
+                overviewPanel.style.display = 'block';
+                detailPanel.style.display = 'none';
+            } else if (viewName === 'detail') {
+                overviewPanel.style.display = 'none';
+                detailPanel.style.display = 'flex';
+                detailPanel.style.flexDirection = 'column';
+            }
+        }
+    
+            let currentAssetName = null;
+let assetDetailChartInstance = null;
+
+        function showAsset(assetType, symbol) {
+            if (!portfolioData || !portfolioData[assetType] || !portfolioData[assetType][symbol]) {
+                console.error("Asset not found:", assetType, symbol);
+                return;
+            }
+            const asset = portfolioData[assetType][symbol];
+            switchView('detail');
+
+            currentAssetName = symbol;
+
+            document.getElementById('asset-name').textContent = asset.name;
+            const priceDisplay = asset.price < 1 ? asset.price.toPrecision(4) : asset.price.toFixed(2);
+            document.getElementById('asset-price').textContent = `$${priceDisplay}`;
+
+            const changeEl = document.getElementById('asset-change');
+            const isPositive = asset.changePercent >= 0;
+            changeEl.textContent = `Rise / Fall: ${isPositive ? '+' : ''}${asset.changePercent.toFixed(2)}%`;
+            changeEl.classList.remove('positive', 'negative');
+            changeEl.classList.add(isPositive ? 'positive' : 'negative');
+
+            updateAssetDetailChartFromJson(symbol);
+           
+            const transactionTbody = document.getElementById('transaction-tbody');
+            transactionTbody.innerHTML = asset.transactions.map(tx =>
+                `<tr><td><span class="action-${tx.action.toLowerCase()}">${tx.action}</span></td><td>${tx.price.toFixed(2)}</td><td>${tx.quantity.toLocaleString()}</td><td>${tx.time}</td></tr>`
+            ).join('');
+
+            const newsList = document.getElementById('news-list');
+            newsList.innerHTML = asset.news.map(item =>
+                `<div class="news-item"><a href="${item.url}" target="_blank" rel="noopener noreferrer" class="news-title-link">${item.title}</a><div class="news-meta"><span class="news-source">${item.source}</span><span class="news-date">${item.date}</span></div></div>`
+            ).join('');
+        }
+
+        function updateAssetDetailChartFromJson(assetName) {
+                    const startDateInput = document.getElementById('detailStartDate');
+                    if (!startDateInput) return;
+                    const startDate = new Date(startDateInput.value);
+
+                    $.get('data/all_data.json', function (rawData) {
+                        const filtered = rawData
+                            .filter(d => d.name === assetName)
+                            .map(d => ({ ...d, dateObj: new Date(d.date) }))
+                            .filter(d => d.dateObj >= startDate)
+                            .sort((a, b) => a.dateObj - b.dateObj);
+
+                        const seriesData = filtered.map(d => ({ date: d.date, price: d.price }));
+                        updateAssetDetailChart(seriesData, assetName);
+                    });
+        }
+
+        function updateAssetDetailChart(seriesData, assetName) {
+            const container = document.getElementById('assetDetailChart');
+            if (!container) return;
+            if (assetDetailChartInstance != null) { assetDetailChartInstance.dispose(); }
+            assetDetailChartInstance = echarts.init(container);
+
+            const option = {
+                animationDuration: 1000, dataset: [{ id: 'dataset_raw', source: seriesData }],
+                xAxis: { type: 'category', name: 'Date', show: true }, yAxis: { name: 'Price', show: true },
+                tooltip: { trigger: 'axis' }, grid: { left: 30, right: 30, top: 40, bottom: 40 },
+                series: [{
+                    type: 'line', datasetId: 'dataset_raw', name: assetName, showSymbol: false,
+                    encode: { x: 'date', y: 'price', tooltip: ['price'] },
+                    lineStyle: { width: 3, color: '#3498db' }, areaStyle: { color: 'rgba(52, 152, 219, 0.1)' },
+                    emphasis: { focus: 'series' },
+                    endLabel: { show: true, formatter: function (params) { return assetName + ': ' + params.data.price; } },
+                    labelLayout: { moveOverlap: 'shiftY' }
+                }]
+            };
+            assetDetailChartInstance.setOption(option);
+            window.addEventListener('resize', () => assetDetailChartInstance.resize());
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const detailStartDateInput = document.getElementById('detailStartDate');
+            if (detailStartDateInput) {
+                detailStartDateInput.addEventListener('change', () => {
+                    if (currentAssetName) { updateAssetDetailChartFromJson(currentAssetName); }
+                });
+            }
+        });
+
+        function initializePortfolioValues() {
+            if (!portfolioData) {
+              document.getElementById('total').textContent = '$0.00';
+              document.getElementById('usd').textContent = '$0.00';
+              return;
+            };
+            let totalValue = usd;
+            document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+            for (const assetType in portfolioData) {
+                for (const symbol in portfolioData[assetType]) {
+                    const asset = portfolioData[assetType][symbol];
+                    const holdingValue = (asset.holding > 0 ? asset.holding : 0) * asset.price;
+                    totalValue += holdingValue;
+                    const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
+                    if (element) {
+                        element.textContent = `$${(asset.holding * asset.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    }
+                }
+            }
+            document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+
+        function updateMarketMovers() {
+            const gainersListEl = document.getElementById('gainers-list');
+            const losersListEl = document.getElementById('losers-list');
+            gainersListEl.innerHTML = ''; 
+            losersListEl.innerHTML = '';
+
+            if (!portfolioData || Object.keys(portfolioData).length === 0) {
+                 gainersListEl.innerHTML = '<div class="holding-item"><span>No holdings to display.</span></div>';
+                 losersListEl.innerHTML = '';
+                 return;
+            }
+
+            let allAssets = [];
+            for (const assetType in portfolioData) {
+                for (const symbol in portfolioData[assetType]) {
+                    const asset = portfolioData[assetType][symbol];
+                    if (asset.price != null && asset.changePercent != null && asset.holding > 0) {
+                        const changeAmount = asset.price * (asset.changePercent / 100) * asset.holding;
+                        allAssets.push({ name: asset.name, changePercent: asset.changePercent, changeAmount: changeAmount });
+                    }
+                }
+            }
+
+            const gainers = allAssets.filter(a => a.changeAmount > 0).sort((a, b) => b.changeAmount - a.changeAmount).slice(0, 3);
+            const losers = allAssets.filter(a => a.changeAmount < 0).sort((a, b) => a.changeAmount - b.changeAmount).slice(0, 3);
+
+            if (gainers.length > 0) {
+                gainers.forEach(asset => { gainersListEl.innerHTML += `<div class="holding-item"><span>${asset.name}</span><span class="positive">+${asset.changePercent.toFixed(2)}%</span></div>`; });
+            } else {
+                gainersListEl.innerHTML = '<div class="holding-item"><span>No gainers today.</span></div>';
+            }
+
+            if (losers.length > 0) {
+                losers.forEach(asset => { losersListEl.innerHTML += `<div class="holding-item"><span>${asset.name}</span><span class="negative">${asset.changePercent.toFixed(2)}%</span></div>`; });
+            } else {
+                losersListEl.innerHTML = '<div class="holding-item"><span>No losers today.</span></div>';
+            }
+        }
+
+        function renderDashboard(portfolioIndex) {
+            if (portfolioIndex < 0 || portfolioIndex >= allPortfolios.length) { portfolioIndex = 0; }
+            currentPortfolioIndex = portfolioIndex;
+            const activePortfolio = allPortfolios[portfolioIndex];
+            portfolioData = adaptDataStructure(activePortfolio);
+
+            buildSidebar(activePortfolio);
+            updatePortfolioDropdown();
+            initializePortfolioValues();
+            updateMarketMovers();
+            switchView('overview');
+        }
+
+        function initializeApp() {
+            if (allPortfolios && allPortfolios.length > 0) {
+                renderDashboard(0);
+            } else {
+                updatePortfolioDropdown();
+                document.getElementById('sidebar').innerHTML = "<h1>Please add a portfolio to begin.</h1>";
+                document.getElementById('total').textContent = '$0.00';
+            }
+
+            let _rawData = [];
+            const chart = echarts.init(document.getElementById('overviewNetWorthChart'));
+            chart.resize();
+
+            $.get('data/all_data.json', function (data) {
+                _rawData = data.map(d => ({ ...d, dateObj: new Date(d.date) })).sort((a, b) => a.dateObj - b.dateObj);
+                updateChart();
+            });
+
+            document.getElementById('startDate').addEventListener('change', updateChart);
+            function updateChart() {
+                const startDate = new Date(document.getElementById('startDate').value);
+                const filtered = _rawData.filter(d => d.dateObj >= startDate);
+                run(filtered);
+            }
+
+            function run(processedData) {
+                const invest_types = ['bitcoin', 'ethereum', 'ripple', 'dogecoin','NVDA', 'TSLA', 'HSBC', 'MSFT', 'GOOGL','SPY', 'QQQ', 'GLD', 'AGG'];
+                const datasetWithFilters = [];
+                const seriesList = [];
+
+                invest_types.forEach(name => {
+                    const datasetId = 'dataset_' + name;
+                    datasetWithFilters.push({ id: datasetId, fromDatasetId: 'dataset_raw', transform: { type: 'filter', config: { and: [{ dimension: 'name', '=': name }] } } });
+                    seriesList.push({
+                        type: 'line', datasetId: datasetId, showSymbol: false, name: name, areaStyle: {opacity: 0.15},
+                        endLabel: { show: true, formatter: params => `${params.seriesName}: ${params.data.price.toFixed(2)}` },
+                        labelLayout: { moveOverlap: 'shiftY' }, emphasis: { focus: 'series' },
+                        encode: { x: 'date', y: 'price', label: ['name', 'price'], itemName: 'date', tooltip: ['price'] }
+                    });
+                });
+
+                const option = {
+                    animationDuration: 5000, dataset: [{ id: 'dataset_raw', source: processedData }, ...datasetWithFilters],
+                    tooltip: { order: 'valueDesc', trigger: 'axis' }, xAxis: { type: 'category', nameLocation: 'middle' },
+                    yAxis: { name: 'Price($USD)' }, grid: { left: 80, right: 120, top: 30, bottom: 0, containLabel: true },
+                    series: seriesList
+                };
+                chart.clear();  
+                chart.setOption(option);
+                window.addEventListener('resize', () => { if (chart) { chart.resize(); } });
+            }
+                        
+            const incomeCtx = document.getElementById('incomeChart');
+            var incomeChart = echarts.init(incomeCtx);
+            $.get('data/income_source.json', function (pieData) {
+                const option = { tooltip: { trigger: 'item' }, legend: { top: '5%', left: 'center' }, series: [ { name: 'Income', type: 'pie', radius: ['40%', '70%'], avoidLabelOverlap: false, label: { show: false }, emphasis: { label: { show: true, fontSize: 40, fontWeight: 'bold' } }, labelLine: { show: false }, data: pieData } ] };
+                incomeChart.setOption(option);
+                incomeChart.resize();
+            });
+    
+            const spendingCtx = document.getElementById('spendingChart');            
+            var spendingChart = echarts.init(spendingCtx);
+            $.get('data/spending_source.json', function (pieData) {
+                const colorList = ['#EE6666', '#73C0DE', '#3BA272','#5470C6', '#91CC75', '#FAC858'];
+                pieData.forEach((item, index) => { item.itemStyle = { color: colorList[index % colorList.length] }; });
+                const option = { tooltip: { trigger: 'item' }, legend: { top: '5%', left: 'center' }, series: [ { name: 'Spending', type: 'pie', radius: ['40%', '70%'], avoidLabelOverlap: false, label: { show: false }, emphasis: { label: { show: true, fontSize: 30, fontWeight: 'bold' } }, labelLine: { show: false }, data: pieData } ] };
+                spendingChart.setOption(option);
+                spendingChart.resize();
+            });
+
+            // MODIFIED: Initialize ALL Modal event listeners
+            document.getElementById("addPortfolioForm").addEventListener("submit", handleAddPortfolio);
+            document.getElementById("transactionForm").addEventListener("submit", handleTransactionSubmit);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('data/portfolios.json')
+                .then(response => { if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } return response.json(); })
+                .then(jsonData => {
+                    allPortfolios = jsonData.portfolios || [];
+                    initializeApp();
+                })
+                .catch(error => {
+                    console.error("Could not load or parse portfolio data:", error);
+                    document.body.innerHTML = `<div style="text-align: center; padding: 50px; font-family: sans-serif;"><h1>Error</h1><p>Could not load portfolio data. Please check the console for details.</p></div>`;
+                });
+        });
+
+        let interval_1;
+        function startCounter() {
+            interval_1 = setInterval(() => {
+                if (!portfolioData) return;
+                let totalValue = usd;
+                document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                for (const assetType in portfolioData) {
+                    for (const symbol in portfolioData[assetType]) {
+                        const asset = portfolioData[assetType][symbol];
+                        const holdingValue = asset.holding * asset.price;
+                        totalValue += holdingValue;
+                        const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
+                        if (element) {
+                            element.textContent = `$${holdingValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        }
+                    }
+                }
+                document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            }, 10000);
+        }
+
+        function stopCounter() { clearInterval(interval_1); }
+        startCounter();
+
+        function toggleSection(sectionId) { document.getElementById(sectionId + '-content').classList.toggle('collapsed'); }
+        let currentSlide = 0;
+        function showSlide(index) { const carouselInner = document.getElementById('carouselInner'); const totalSlides = carouselInner.children.length; currentSlide = (index + totalSlides) % totalSlides; carouselInner.style.transform = 'translateX(' + (-currentSlide * 100) + '%)'; }
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+ 
+    </script>
+</body>
+</html>

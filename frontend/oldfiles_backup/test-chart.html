@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>单位净值 + 买卖操作图</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background: #f8f8f8;
+    }
+    #chart {
+      width: 100%;
+      height: 600px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>单位净值 + 买卖操作 + 成交量</h2>
+<div id="chart"></div>
+
+<script>
+  const upColor = '#00da3c';
+
+  const rawData = [
+    ["05-01\n2025", 100, 0, 0, 0, 300],
+    ["05-02\n2025", 102, 0, 0, 50, 400],
+    ["05-03\n2025", 104, 0, 0, -30, 350],
+    ["05-04\n2025", 101, 0, 0, 0, 280],
+    ["05-05\n2025", 105, 0, 0, 100, 500],
+    ["05-06\n2025", 107, 0, 0, -60, 450],
+    ["05-07\n2025", 110, 0, 0, 0, 400],
+  ];
+
+  function splitData(rawData) {
+    const categoryData = [], values = [], options = [], volumes = [];
+    for (let i = 0; i < rawData.length; i++) {
+      categoryData.push(rawData[i][0]);        // 日期
+      values.push(rawData[i][1]);              // 净值
+      options.push([i, Math.abs(rawData[i][4]), rawData[i][4] > 0 ? 1 : -1]);
+      volumes.push(rawData[i][5]);             // 成交量
+    }
+    return { categoryData, values, options, volumes };
+  }
+
+  function fliterData(data) {
+    const point = [];
+    for (let i = 0; i < data.options.length; i++) {
+      if (data.options[i][1]) {
+        point.push({
+          name: data.options[i][2] > 0 ? '买入' : '卖出',
+          coord: [data.categoryData[i], data.values[i]],
+          itemStyle: {
+            color: data.options[i][2] > 0 ? '#00da3c' : 'red'
+          }
+        });
+      }
+    }
+    return point;
+  }
+
+  const data = splitData(rawData);
+  const point = fliterData(data);
+
+const option = {
+  backgroundColor: '#fff',
+  tooltip: {
+    trigger: 'axis',
+    axisPointer: { type: 'cross' },
+    formatter: function (params) {
+      const index = params[0].dataIndex;
+      let info = '';
+      let color = '#00da3c';
+      if (data.options[index][1]) {
+        const action = data.options[index][2] > 0 ? '买入' : '卖出';
+        color = action === '买入' ? '#00da3c' : 'red';
+        info = `操作: ${action} ${data.options[index][1]} 份`;
+      }
+      return `
+        <div>
+          <strong>${params[0].axisValue}</strong><br>
+          净值: ${data.values[index]}<br>
+          <span style="color:${color}">${info}</span>
+        </div>`;
+    }
+  },
+  grid: [
+    { left: '10%', right: '8%', height: '55%' },
+    { left: '10%', right: '8%', top: '65%', height: '20%' }
+  ],
+    xAxis: [
+      {
+        type: 'category',
+        data: data.categoryData,
+        boundaryGap: true,
+        axisPointer: { z: 100 }
+      },
+      {
+        type: 'category',
+        gridIndex: 1,
+        data: data.categoryData,
+        boundaryGap: true,
+        axisLine: { show: false },
+        axisLabel: { show: false },
+        axisTick: { show: false }
+      }
+    ],
+    yAxis: [
+      { scale: true },
+      {
+        scale: true,
+        gridIndex: 1,
+        axisLabel: { show: false },
+        axisLine: { show: false },
+        axisTick: { show: false },
+        splitLine: { show: false }
+      }
+    ],
+
+    series: [
+      {
+        name: '单位净值',
+        type: 'line',
+        data: data.values,
+        smooth: true,
+        itemStyle: { color: upColor },
+        symbolSize: 1,
+        markPoint: {
+          symbol: 'circle',
+          symbolSize: 10,
+          label: { show: true },
+          data: point
+        }
+      },
+
+    ]
+  };
+
+  const chart = echarts.init(document.getElementById('chart'));
+  chart.setOption(option);
+</script>
+
+</body>
+</html>
