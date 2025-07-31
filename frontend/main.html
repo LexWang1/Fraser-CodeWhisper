@@ -138,18 +138,7 @@
             <div class="carousel">
                 <button class="carousel-arrow left" onclick="prevSlide()">&#8249;</button>
                 <div class="carousel-inner" id="carouselInner">
-                    <div class="carousel-slide">
-                        <h3 class="chart-title">Stock Price Over Time</h3>
-                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
-                             <div class="controls" style="margin-top: -15px;">
-                                <label for="startDate">Start Date:</label>
-                                <input type="date" id="startDate" value="2025-05-20">
-                            </div>
-                          
-                                <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
-                                                                                 
-                                                                       
-                    </div>                      
+
                     <div class="carousel-slide">
                         <h3 class="chart-title">Cash Flow</h3>
                         <div style="display:flex;justify-content:space-around;align-items:center;">
@@ -157,14 +146,14 @@
                         <div class="donut-chart">
                             <div id="incomeChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
                             <div style="text-align: center; margin-top: -50px;">
-                                <div style="font-weight: 600; color: #666;">INCOME</div>
+                                <div style="font-weight: 600; color: #666;">Gain</div>
                                 <div style="font-size: 20px; font-weight: 700; color: #3498db;">$18,665</div>
                             </div>
                         </div>
                         <div class="donut-chart">
                             <div id="spendingChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
                             <div style="text-align: center; margin-top: -50px;">
-                                <div style="font-weight: 600; color: #666;">SPENDING</div>
+                                <div style="font-weight: 600; color: #666;">Lose</div>
                                 <div style="font-size: 20px; font-weight: 700; color: #e74c3c;">$42,500</div>
                             </div>
                         </div>
@@ -172,6 +161,19 @@
 
                         </div>
                     </div>
+
+                     <div class="carousel-slide">
+                        <h3 class="chart-title">Stock Price Over Time</h3>
+                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
+                             <div class="controls" style="margin-top: -15px;">
+                                <label for="startDate">Start Date:</label>
+                                <input type="date" id="startDate" value="2025-05-20">
+                            </div>
+                          
+                       <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
+                                                                                 
+                                                                       
+                    </div>     
                     </div>
                
                 <button class="carousel-arrow right" onclick="nextSlide()">&#8250;</button>
@@ -296,6 +298,7 @@
                 adaptedData[assetType][asset.stockId] = {
                     name: asset.assetName,
                     price: asset.currentPrice,//TODO：改成通过API获取
+                    histoty:asset.currentPrice,
                     changePercent: asset.changePercent,//TODO
                     holding: asset.quantity,
                     priceHistory: asset.priceHistory,
@@ -437,7 +440,7 @@
         }
     
             let currentAssetName = null;
-let assetDetailChartInstance = null;
+            let assetDetailChartInstance = null;
 
         function showAsset(assetType, symbol) {
             if (!portfolioData || !portfolioData[assetType] || !portfolioData[assetType][symbol]) {
@@ -469,10 +472,14 @@ let assetDetailChartInstance = null;
             ).join('');
 
             const newsList = document.getElementById('news-list');
+
+
             newsList.innerHTML = asset.news.map(item =>
-                `<div class="news-item"><a href="#" class="news-title-link">${item.title}</a><div class="news-meta"><span class="news-source">${item.source}</span><span class="news-date">${item.date}</span></div></div>`
+                `<div class="news-item"><a href="${item.url}" target="_blank" rel="noopener noreferrer" class="news-title-link">${item.title}</a><div class="news-meta"><span class="news-source">${item.source}</span><span class="news-date">${item.date}</span></div></div>`
             ).join('');
             console.log("showAsset executed for", assetType, symbol);
+
+            
         }
         
         
@@ -638,6 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Adapt the data for the selected portfolio
             portfolioData = adaptDataStructure(activePortfolio);
+            console.log("🔍 Raw active portfolio:", activePortfolio);
 
             // Re-build the UI components
             buildSidebar(activePortfolio);
@@ -646,6 +654,9 @@ document.addEventListener('DOMContentLoaded', () => {
             updateMarketMovers(); // Update gainers and losers
 
             // Reset view to overview
+            const { gainList, loseList } = calculateIncomeSpendingFromHoldings(activePortfolio.holdings);
+            updateIncomeChart(gainList);
+            updateSpendingChart(loseList);
             switchView('overview');
             console.log(`Switched to portfolio: ${activePortfolio.name}`);
         }
@@ -653,6 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /**
          * Contains setup code that runs AFTER the data is loaded.
          */
+
         function initializeApp() {
             renderDashboard(0); // Render the first portfolio by default
 
@@ -776,119 +788,140 @@ document.addEventListener('DOMContentLoaded', () => {
             const spendingCtx = document.getElementById('spendingChart').getContext('2d');
             new Chart(spendingCtx, { type: 'doughnut', data: { datasets: [{ data: [42500, 10000], backgroundColor: ['#e74c3c', '#ecf0f1'], cutout: '70%' }] }, options: { plugins: { legend: { display: false } } } });
         */
-               const incomeCtx = document.getElementById('incomeChart');
-        var incomeChart = echarts.init(incomeCtx);
-        var option;
-
-          $.get('data/income_source.json', function (pieData) {
-    const option = {
-  tooltip: {
-    trigger: 'item'
-  },
-  legend: {
-    top: '5%',
-    left: 'center'
-  },
-  series: [
-    {
-      name: 'Income',
-      type: 'pie',
-      radius: ['40%', '70%'],
-      avoidLabelOverlap: false,
-      label: {
-        show: false,
-        position: 'center',
-        textStyle: {
-    color: '#666'  // 替换为你想要的颜色
-  }
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 40,
-          fontWeight: 'bold',
-          color: '#666'
-        }
-      },
-      labelLine: {
-        show: false
-      },
-          data: pieData // ✅ 从外部加载的数据
-        }
-      ]
-    };
-
-    incomeChart.setOption(option);
-    incomeChart.resize(); // optional
-
-    });
-    
-             // Chart.js doughnut charts initialization for spending
-    const spendingCtx = document.getElementById('spendingChart');            
-    var spendingChart = echarts.init(spendingCtx);
-    var option;
-
-    $.get('data/spending_source.json', function (pieData) {
-            const colorList = ['#EE6666', '#73C0DE', '#3BA272','#5470C6', '#91CC75', '#FAC858'];
-
-
-            // 给每个数据项按顺序分配颜色
-            pieData.forEach((item, index) => {
-                item.itemStyle = {
-                color: colorList[index % colorList.length]  // 防止越界循环使用
-                };
-            });
-    const option = {
         
-  tooltip: {
-    trigger: 'item'
-  },
-  legend: {
-    top: '5%',
-    left: 'center',
-    textStyle: {
-    color: '#666'  // 替换为你想要的颜色
-  }
-  },
-  series: [
-    {
-      name: 'Spending',
-      type: 'pie',
-      radius: ['40%', '70%'],
-      avoidLabelOverlap: false,
-      label: {
-        show: false,
-        position: 'center'
-      },
-      emphasis: {
-        label: {
-          show: true,
-          fontSize: 30,
-          fontWeight: 'bold',
-           color: '#666'
-        }
-      },
-      labelLine: {
-        show: false
-      },
-          data: pieData // ✅ 从外部加载的数据
-        }
-      ]
-    };
-
-    spendingChart.setOption(option);
-    spendingChart.resize(); // optional
-
-    });
-
  
             // Initialize Modal event listeners
             document.getElementById("addPortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const name = document.getElementById("portfolioName").value; const value = document.getElementById("portfolioValue").value; if (name && value) { localPortfolios.push({ name, value }); closeModal(); this.reset(); } });
             document.getElementById("deletePortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const index = document.getElementById("portfolioToDelete").value; if (index !== null && index < localPortfolios.length) { localPortfolios.splice(index, 1); closeDeleteModal(); } });
         }
 
+            function calculateIncomeSpendingFromHoldings(holdings) {
+                const gainList = [];
+                const loseList = [];
 
-        // 7. PAGE LOAD & UTILITY FUNCTIONS
+                holdings.forEach(asset => {
+                    const { assetName, assetType, currentPrice, priceHistory, quantity } = asset;
+
+                    // 取历史价格，默认为 priceHistory 的第一个或倒数第二个值
+                    const historyPrice = Array.isArray(priceHistory) && priceHistory.length > 0
+                        ? priceHistory[priceHistory.length - 2] || priceHistory[0]
+                        : currentPrice; // fallback
+
+                    const diff = currentPrice - historyPrice;
+                    const value = diff * quantity;
+
+                    const result = {
+                        assetName,
+                        assetType,
+                        value: Math.abs(value) // 饼图展示时使用正值
+                    };
+
+                    if (value >= 0) {
+                        gainList.push(result);
+                    } else {
+                        loseList.push(result);
+                    }
+                });
+
+                return {
+                    gainList,
+                    loseList
+                };
+            }
+
+        function aggregateByAssetType(assetList) {
+    const typeMap = {};
+
+    assetList.forEach(item => {
+        const { assetType, value } = item;
+        if (!typeMap[assetType]) {
+            typeMap[assetType] = 0;
+        }
+        typeMap[assetType] += value;
+    });
+
+    // 返回 ECharts 所需的数据结构
+    return Object.entries(typeMap).map(([type, total]) => ({
+        name: type.charAt(0).toUpperCase() + type.slice(1), // 格式化首字母
+        value: total
+    }));
+}
+
+        function updateIncomeChart(gainList) {
+    const chart = echarts.init(document.getElementById('incomeChart'));
+    const pieData = aggregateByAssetType(gainList);
+
+    const option = {
+        tooltip: { trigger: 'item' },
+        legend: {
+            top: '5%',
+            left: 'center',
+            textStyle: { color: '#666' }
+        },
+        series: [{
+            name: 'Income',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            label: { show: false, position: 'center' },
+            emphasis: {
+                label: {
+                    show: true,
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                    color: '#666'
+                }
+            },
+            labelLine: { show: false },
+            data: pieData
+        }]
+    };
+
+    chart.setOption(option);
+    chart.resize();
+}
+
+
+function updateSpendingChart(loseList) {
+    const chart = echarts.init(document.getElementById('spendingChart'));
+    const colorList = ['#EE6666', '#73C0DE', '#3BA272','#5470C6', '#91CC75', '#FAC858'];
+
+    const pieData = aggregateByAssetType(loseList).map((item, index) => ({
+        ...item,
+        itemStyle: { color: colorList[index % colorList.length] }
+    }));
+
+    const option = {
+        tooltip: { trigger: 'item' },
+        legend: {
+            top: '5%',
+            left: 'center',
+            textStyle: { color: '#666' }
+        },
+        series: [{
+            name: 'Spending',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            label: { show: false, position: 'center' },
+            emphasis: {
+                label: {
+                    show: true,
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                    color: '#666'
+                }
+            },
+            labelLine: { show: false },
+            data: pieData
+        }]
+    };
+
+    chart.setOption(option);
+    chart.resize();
+}
+
+// 7. PAGE LOAD & UTILITY FUNCTIONS
         document.addEventListener('DOMContentLoaded', () => {
             fetch('data/portfolios.json')
                 .then(response => { if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`); } return response.json(); })
