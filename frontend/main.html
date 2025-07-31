@@ -807,11 +807,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const { assetName, assetType, currentPrice, priceHistory, quantity,history} = asset;
 
                     // 取历史价格，this is for test
-                    const historyPrice = Array.isArray(priceHistory) && priceHistory.length > 0
-                        ? priceHistory[priceHistory.length - 2] || priceHistory[0]
-                        : currentPrice; // fallback
+                    //const historyPrice = Array.isArray(priceHistory) && priceHistory.length > 0
+                    //    ? priceHistory[priceHistory.length - 2] || priceHistory[0]
+                    //    : currentPrice; // fallback
 
-                    const diff = currentPrice-historyPrice; //- history;
+                    const diff = currentPrice-history;//historyPrice; //- history;
                     const value = diff * quantity;
 
                     const roundedValue = Math.round(Math.abs(value) * 100) / 100;
