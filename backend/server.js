@@ -1,14 +1,15 @@
 const express = require('express');
+const axios = require('axios');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = 3088;
 app.use(cors());
 app.use(express.json());
 
 const pool = mysql.createPool({
-    host: 'localhost', user: 'root', password: 'SUPERljy@981002', database: 'financial_data',
+    host: 'localhost', user: 'root', password: 'qwe123rty', database: 'financial_data',
     waitForConnections: true, connectionLimit: 10, queueLimit: 0
 });
 
@@ -51,11 +52,78 @@ app.get('/api/asset_price', async (req, res) => {
     }
 });
 
+app.get('/currentStock/:ticket', (req, res) => {
+  // 获取路由参数并保存到变量
+  let symbol = req.params.ticket;
+//   const symbol = 'TSLA'; //index use ^ at the head, stock use ticket name
+  const interval = '1m'; // 1 day     1m 1d 1mo 1y 
+  const range = '1m'; // 1 month   1m 1d 1mo 1y 
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
+
+  axios.get(url)   //必须用axios.get
+  .then(response => {
+    console.log('Stock Price from now:', response.data.chart.result[0].indicators.quote[0]["close"][0]);
+    res.send(response.data.chart.result[0].indicators.quote[0]["close"][0]);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+});
+
+app.get('/currentFund/:ticket',(req,res)=>{
+    let fundSymbol = req.params.ticket;
+    // const fundSymbol = 'VFINX'; // Vanguard 500 Index Fund
+    let fund_interval = '1m';
+    let fund_range = '1m';
+    const fund_url = `https://query1.finance.yahoo.com/v8/finance/chart/${fundSymbol}?interval=${fund_interval}&range=${fund_range}`;
+axios.get(fund_url)
+  .then(response => {
+    const historicalData = response.data.chart.result[0].indicators.quote[0]["close"][0];
+    console.log('Historical Fund Prices:', historicalData);
+    res.send(historicalData);
+  })
+  .catch(error => {
+    console.error('Error fetching Yahoo Finance data:', error);
+  });
+});
+
+app.get('/currentCrypto/:ticket',(req,res)=>{
+    let Symbol = req.params.ticket;
+    
+    let currency = "usd"; //usd as price
+    let daily_range = "1";
+    axios.get(`https://api.coingecko.com/api/v3/coins/${Symbol}/market_chart?vs_currency=${currency}&days=${daily_range}`)
+      .then(response => {
+        console.log(`Crypto ${Symbol} Price:`, response.data["prices"][0][1]);
+        res.send(response.data["prices"][0][1]);
+      }).catch(error =>{console.log("test:", Symbol);}
+        
+      );
+});
+
+//foreign exchange api
+app.get('/currentExchange/:ticket',(req,res)=>{
+    let Symbol = req.params.ticket;
+    let currency = "USD"; //usd as price
+    const date = '2025-07-31'; // Historical date
+    axios.get(`https://api.frankfurter.app/${date}?from=${Symbol}&to=${currency}`)
+    .then(response => {
+      const historicalRate = response.data.rates.USD;//得到一个double，每个外币相对美元的单价
+      console.log(`${Symbol} to ${currency} on ${date}: ${historicalRate}`);
+    //   console.log(`Crypto ${Symbol} Price:`, response.data["prices"][0][1]);
+      res.send(historicalRate);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+});
+
+
 app.listen(port, () => {
     console.log(`数据接口服务已启动，正在监听 http://localhost:${port}`);
-    console.log("-----------------------------------------------------");
-    console.log("请注意：查询参数已从 'type' 变更为 'asset_type'!");
-    console.log("新闻接口示例: http://localhost:3000/api/news?asset_type=Stock&symbol=TSLA");
-    console.log("价格接口示例: http://localhost:3000/api/asset_price?asset_type=Crypto&name=bitcoin&date=2025-6-27");
-    console.log("-----------------------------------------------------");
+    // console.log("-----------------------------------------------------");
+    // console.log("请注意：查询参数已从 'type' 变更为 'asset_type'!");
+    // console.log("新闻接口示例: http://localhost:3000/api/news?asset_type=Stock&symbol=TSLA");
+    // console.log("价格接口示例: http://localhost:3000/api/asset_price?asset_type=Crypto&name=bitcoin&date=2025-6-27");
+    // console.log("-----------------------------------------------------");
 });

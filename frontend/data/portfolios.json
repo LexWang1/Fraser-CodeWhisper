@@ -183,7 +183,7 @@
         },
         {
           "stockId": "CNY",
-          "assetName": "Chinese Yuan",
+          "assetName": "Chineses Yuan",
           "assetType": "forex",
           "quantity": 50000,
           "averageCost": 0.147058,
@@ -198,8 +198,8 @@
           ]
         },
         {
-          "stockId": "BTC",
-          "assetName": "Bitcoin",
+          "stockId": "bitcoin",
+          "assetName": "bitcoin",
           "assetType": "crypto",
           "quantity": 2.5,
           "averageCost": 30800.00,

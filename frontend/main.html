@@ -906,6 +906,102 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
 
+        let interval_1; //定义定时对象
+        function startCounter() {
+        interval_1 = setInterval(() => {
+            let totalValue = usd; //人为设定的usd持有量
+            document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            for (const assetType in portfolioData) {
+                for (const symbol in portfolioData[assetType]) {
+                    // console.log(assetType , symbol);///
+                    if(assetType == "stock") {
+                    // 先联通外网才能写下去//
+                    let stock_url = `http://localhost:3088/currentStock/${symbol}`;
+                    fetch(stock_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Stock ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else if(assetType == 'etf'){
+                    let fund_url = `http://localhost:3088/currentFund/${symbol}`;
+                    fetch(fund_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Fund ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else if(assetType == 'forex' ){
+                    let forex_url = `http://localhost:3088/currentExchange/${symbol}`;
+                    fetch(forex_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Forex ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else if(assetType == 'crypto'){
+                    let crypto_url = `http://localhost:3088/currentCrypto/${symbol}`;
+                    fetch(crypto_url).then(response => {
+                        if (!response.ok) {
+                        throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(`Crypto ${symbol}:`, data);
+                        portfolioData[assetType][symbol].price = data;//set dynamic value
+                        // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    }else{
+                    console.log("Wrong portfolio type! Go check your portfolio definition!"+symbol+assetType);
+                    }
+                    const asset = portfolioData[assetType][symbol];
+                    const holdingValue = asset.holding * asset.price;
+                    totalValue += holdingValue;
+                    const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
+                    if (element) {
+                        element.textContent = `$${holdingValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    }
+                }
+            }
+            document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }, 10000); // Update every 10 second
+        }
+
+        function stopCounter() { // 可以用按钮触发停止更新， 目前暂时不管停止更新的问题
+        clearInterval(interval_1);
+        }
+
+    // Start the counter when the page loads
+        startCounter();
+
         function toggleSection(sectionId) { document.getElementById(sectionId + '-content').classList.toggle('collapsed'); }
         let currentSlide = 0;
         function showSlide(index) { const carouselInner = document.getElementById('carouselInner'); const totalSlides = carouselInner.children.length; currentSlide = (index + totalSlides) % totalSlides; carouselInner.style.transform = 'translateX(' + (-currentSlide * 100) + '%)'; }
