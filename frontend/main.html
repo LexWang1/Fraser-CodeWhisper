@@ -147,14 +147,17 @@
                             <div id="incomeChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
                             <div style="text-align: center; margin-top: -50px;">
                                 <div style="font-weight: 600; color: #666;">Gain</div>
-                                <div style="font-size: 20px; font-weight: 700; color: #3498db;">$18,665</div>
+                                <!--<div style="font-size: 20px; font-weight: 700; color: #3498db;">$18,665</div>-->
+                                <div id="gain-amount" style="font-size: 20px; font-weight: 700; color: #3498db;">$0.00</div>
                             </div>
                         </div>
                         <div class="donut-chart">
                             <div id="spendingChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
                             <div style="text-align: center; margin-top: -50px;">
                                 <div style="font-weight: 600; color: #666;">Lose</div>
-                                <div style="font-size: 20px; font-weight: 700; color: #e74c3c;">$42,500</div>
+                                <!--<div style="font-size: 20px; font-weight: 700; color: #e74c3c;">$42,500</div>--->
+                                <div id="spending-amount" style="font-size: 20px; font-weight: 700; color: #e74c3c;">$0.00</div>
+
                             </div>
                         </div>
                         </div>
@@ -298,7 +301,7 @@
                 adaptedData[assetType][asset.stockId] = {
                     name: asset.assetName,
                     price: asset.currentPrice,//TODO：改成通过API获取
-                    histoty:asset.currentPrice,
+                    history:asset.currentPrice,
                     changePercent: asset.changePercent,//TODO
                     holding: asset.quantity,
                     priceHistory: asset.priceHistory,
@@ -532,7 +535,7 @@ console.log("SeriesData:", seriesData);
         xAxis: { type: 'category', name: 'Date', show: true },
         yAxis: { name: 'Price', show: true },
         tooltip: { trigger: 'axis' },
-        grid: { left: 30, right: 30, top: 40, bottom: 40 },
+        grid: { left: 30, right: 40, top: 40, bottom: 40 },
         series: [{
             type: 'line',
             datasetId: 'dataset_raw',
@@ -545,7 +548,7 @@ console.log("SeriesData:", seriesData);
             endLabel: {
                 show: true,
                 formatter: function (params) {
-                    return assetName + ': ' + params.data.price;
+                    return params.data.price;
                 }
             },
             labelLayout: { moveOverlap: 'shiftY' }
@@ -657,6 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { gainList, loseList } = calculateIncomeSpendingFromHoldings(activePortfolio.holdings);
             updateIncomeChart(gainList);
             updateSpendingChart(loseList);
+            updateGainSpendingLabels(gainList, loseList);
             switchView('overview');
             console.log(`Switched to portfolio: ${activePortfolio.name}`);
         }
@@ -795,26 +799,29 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById("deletePortfolioForm").addEventListener("submit", function(e) { e.preventDefault(); const index = document.getElementById("portfolioToDelete").value; if (index !== null && index < localPortfolios.length) { localPortfolios.splice(index, 1); closeDeleteModal(); } });
         }
 
-            function calculateIncomeSpendingFromHoldings(holdings) {
+        function calculateIncomeSpendingFromHoldings(holdings) {
                 const gainList = [];
                 const loseList = [];
 
                 holdings.forEach(asset => {
-                    const { assetName, assetType, currentPrice, priceHistory, quantity } = asset;
+                    const { assetName, assetType, currentPrice, priceHistory, quantity,history} = asset;
 
-                    // 取历史价格，默认为 priceHistory 的第一个或倒数第二个值
+                    // 取历史价格，this is for test
                     const historyPrice = Array.isArray(priceHistory) && priceHistory.length > 0
                         ? priceHistory[priceHistory.length - 2] || priceHistory[0]
                         : currentPrice; // fallback
 
-                    const diff = currentPrice - historyPrice;
+                    const diff = currentPrice-historyPrice; //- history;
                     const value = diff * quantity;
+
+                    const roundedValue = Math.round(Math.abs(value) * 100) / 100;
 
                     const result = {
                         assetName,
                         assetType,
-                        value: Math.abs(value) // 饼图展示时使用正值
+                        value: roundedValue
                     };
+
 
                     if (value >= 0) {
                         gainList.push(result);
@@ -919,6 +926,31 @@ function updateSpendingChart(loseList) {
 
     chart.setOption(option);
     chart.resize();
+}
+
+
+
+
+function updateGainSpendingLabels(gainList, loseList) {
+    const gainTotal = gainList.reduce((sum, item) => sum + item.value, 0);
+    const loseTotal = loseList.reduce((sum, item) => sum + item.value, 0);
+
+    const gainLabel = document.getElementById('gain-amount');
+    const spendLabel = document.getElementById('spending-amount');
+
+    if (gainLabel) {
+        gainLabel.textContent = `$${gainTotal.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    }
+
+    if (spendLabel) {
+        spendLabel.textContent = `$${loseTotal.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    }
 }
 
 // 7. PAGE LOAD & UTILITY FUNCTIONS
