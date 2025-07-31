@@ -7,6 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
     
   <!-- 假设 style.css 包含了两个文件所需的所有样式 -->
   <link rel="stylesheet" href="style.css">
@@ -82,7 +83,7 @@
                 <div class="net-worth-title">NET WORTH</div>
                 <div class="net-worth-amount" id="total">$2,317,371.20</div>
             </div>
-            <div class="container">hi</div>
+            <!-- <div class="container">hi</div> -->
             <div class="section">
                 <div class="section-title" onclick="toggleSection('cash')">CASH</div>
                 <div class="section-content" id="cash-content">
@@ -108,30 +109,6 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- <script>
-              let count = 0;
-              let interval_1;
-              function startCounter() {
-                interval_1 = setInterval(() => {
-                  count++; // Update variable
-                  document.getElementById('12321').textContent = count; // Update DOM
-                  }, 1000); // Update every 1 second
-                }
-
-            //    const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
-            //    if (element) {
-            //        element.textContent = `$${holdingValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            //    }
-
-              function stopCounter() {
-                  clearInterval(interval_1);
-              }
-              // Start the counter when the page loads
-              startCounter();
-
-            </script> -->
-
             <div class="section">
                 <div class="section-title" onclick="toggleSection('stock')">STOCK</div>
                 <div class="section-content" id="stock-content">
@@ -193,13 +170,15 @@
             <div class="section">
                 <div class="section-title" onclick="toggleSection('crypto')">CRYPTO</div>
                 <div class="section-content" id="crypto-content">
-                    <div class="account-item clickable" onclick="showAsset('crypto', 'BTC')">
+                    <div class="account-item clickable" onclick="showAsset('crypto', 'bitcoin')">
                         <div><div class="account-name">BTC</div><div class="account-details">Bitcoin</div></div>
-                        <div class="account-amount" id="btc-holding-value"></div>
+                        <div class="account-amount" id="bitcoin-holding-value"></div>
                     </div>
                 </div>
             </div>
         </div>
+
+        
   
         <!-- VIEW 1: Main Overview Panel (from financial_test6) -->
         <div class="right-panel" id="overview-panel">
@@ -212,8 +191,10 @@
                                 <label for="startDate">Start Date:</label>
                                 <input type="date" id="startDate" value="2025-05-20">
                             </div>
-
-                            <div id="netWorthChart"></div>
+                            <!-- 使用javascript动态作图 -->
+                            <!-- <center> -->
+                              <div id="netWorthChart"></div>
+                            <!-- </center> -->
                     </div>
                     <div class="carousel-slide">
                         <h3 class="chart-title">Cash Flow</h3>
@@ -244,10 +225,13 @@
                 <div class="market-section">
                 <h3 class="chart-title">Market Movers</h3>
                 <div class="market-indices">
+                  <!-- 增加动态更新股指！！ -->
+
                     <div class="index-card"><div class="index-change positive">0.65%</div><div>S&P 500</div></div>
                     <div class="index-card"><div class="index-change negative">-0.72%</div><div>DOW JONES</div></div>
                     <div class="index-card"><div class="index-change positive">0.14%</div><div>NASDAQ</div></div>
                     <div class="index-card"><div class="index-change negative">-2.36%</div><div>10 YR BOND</div></div>
+                    
                 </div>
                 </div>
                 <div class="market-section">
@@ -317,7 +301,10 @@
         </main>
     </div>
 
-  <script>
+    <!-- import axios library in web browser -->
+   
+
+  <script >
     // --- COMBINED & CENTRALIZED SCRIPT ---
 
     // 1. DATA (Consolidated from both files)
@@ -340,8 +327,9 @@
             'CNY': { name: 'Chinese Yuan', price: 1 / 6.5, changePercent: 0.10, holding: 50000, priceHistory: [1/6.55, 1/6.54, 1/6.52, 1/6.51, 1/6.53, 1/6.49, 1/6.5], transactions: [{ action: 'Buy', price: 1/6.8, quantity: 50000, time: '2025/05/20 12:00' }], news: [{ title: 'China\'s Central Bank Pledges FX Market Stability', source: 'Reuters', date: '1 day ago' }] }
         },
         'crypto': {
-            'BTC': { name: 'Bitcoin', price: 40000.00, changePercent: 4.58, holding: 2.5, priceHistory: [38500, 39000, 41000, 39500, 40500, 39800, 40000], transactions: [{ action: 'Buy', price: 35000.00, quantity: 1.0, time: '2025/04/11 22:30' }, { action: 'Buy', price: 28000.00, quantity: 1.5, time: '2025/02/02 20:00' }], news: [{ title: 'Major Investment Firm Files for Spot Bitcoin ETF', source: 'CoinDesk', date: '9 hours ago' }, { title: 'Bitcoin Halving Event Approaches, Speculation Rises', source: 'Decrypt', date: '3 days ago' }] }
-        }
+            'bitcoin': { name: 'Bitcoin', price: 40000.00, changePercent: 4.58, holding: 2.5, priceHistory: [38500, 39000, 41000, 39500, 40500, 39800, 40000], transactions: [{ action: 'Buy', price: 35000.00, quantity: 1.0, time: '2025/04/11 22:30' }, { action: 'Buy', price: 28000.00, quantity: 1.5, time: '2025/02/02 20:00' }], news: [{ title: 'Major Investment Firm Files for Spot Bitcoin ETF', source: 'CoinDesk', date: '9 hours ago' }, { title: 'Bitcoin Halving Event Approaches, Speculation Rises', source: 'Decrypt', date: '3 days ago' }] }
+        //inside cryto, we must preserve coin name but not ticket name
+          }
     };
     let assetDetailChart = null;
     let usd = 1000;
@@ -438,7 +426,105 @@
             }
         }
         document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    
+      }
+
+    let interval_1; //定义定时对象
+    function startCounter() {
+      interval_1 = setInterval(() => {
+        let totalValue = usd; //人为设定的usd持有量
+        document.getElementById('usd').textContent = `$${usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        for (const assetType in portfolioData) {
+            for (const symbol in portfolioData[assetType]) {
+                // console.log(assetType , symbol);///
+                if(assetType == "stocks") {
+                  // 先联通外网才能写下去//
+                  let stock_url = `http://localhost:3088/currentStock/${symbol}`;
+                  fetch(stock_url).then(response => {
+                    if (!response.ok) {
+                      throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log(`Stock ${symbol}:`, data);
+                    portfolioData[assetType][symbol].price = data;//set dynamic value
+                    // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                  });
+                }else if(assetType == 'etfs'){
+                  let fund_url = `http://localhost:3088/currentFund/${symbol}`;
+                  fetch(fund_url).then(response => {
+                    if (!response.ok) {
+                      throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log(`Fund ${symbol}:`, data);
+                    portfolioData[assetType][symbol].price = data;//set dynamic value
+                    // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                  });
+                }else if(assetType == 'forex' ){
+                  let forex_url = `http://localhost:3088/currentExchange/${symbol}`;
+                  fetch(forex_url).then(response => {
+                    if (!response.ok) {
+                      throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log(`Forex ${symbol}:`, data);
+                    portfolioData[assetType][symbol].price = data;//set dynamic value
+                    // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                  });
+                }else if(assetType == 'crypto'){
+                  let crypto_url = `http://localhost:3088/currentCrypto/${symbol}`;
+                  fetch(crypto_url).then(response => {
+                    if (!response.ok) {
+                      throw new Error(`Stock request HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log(`Crypto ${symbol}:`, data);
+                    portfolioData[assetType][symbol].price = data;//set dynamic value
+                    // portfolioData[assetType][symbol].price = 0;///////////test visual effect to be 0
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                  });
+                }else{
+                  console.log("Wrong portfolio type! Go check your portfolio definition!");
+                }
+                const asset = portfolioData[assetType][symbol];
+                const holdingValue = asset.holding * asset.price;
+                totalValue += holdingValue;
+                const element = document.getElementById(`${symbol.toLowerCase()}-holding-value`);
+                if (element) {
+                    element.textContent = `$${holdingValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                }
+            }
+        }
+        document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }, 10000); // Update every 10 second
     }
+
+    function stopCounter() { // 可以用按钮触发停止更新， 目前暂时不管停止更新的问题
+      clearInterval(interval_1);
+    }
+
+    // Start the counter when the page loads
+    startCounter();
+
 
     // Sidebar Section Toggle
     function toggleSection(sectionId) {

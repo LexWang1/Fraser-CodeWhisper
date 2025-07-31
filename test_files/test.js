@@ -1,5 +1,6 @@
 // Import axios
 import axios from 'axios';
+import fetch from 'node-fetch';
 
 // const axios = require('axios');
 
@@ -72,8 +73,11 @@ axios.get(fund_url)
     console.error('Error fetching Yahoo Finance data:', error);
   });
 
-  const date = '2023-10-01'; // Historical date
-  axios.get(`https://api.frankfurter.app/${date}?from=EUR&to=USD`)
+
+
+  //foreign exchange
+const date = '2023-10-01'; // Historical date
+axios.get(`https://api.frankfurter.app/${date}?from=EUR&to=USD`)
     .then(response => {
       const historicalRate = response.data.rates.USD;
       console.log(`EUR to USD on ${date}: ${historicalRate}`);
