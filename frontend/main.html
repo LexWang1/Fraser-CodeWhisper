@@ -135,21 +135,20 @@
 
         <!-- VIEW 1: Main Overview Panel (from financial_test6) -->
         <div class="right-panel" id="overview-panel">
-            <div class="chart-container">
             <div class="carousel">
                 <button class="carousel-arrow left" onclick="prevSlide()">&#8249;</button>
                 <div class="carousel-inner" id="carouselInner">
                     <div class="carousel-slide">
-                       
-                        <h3 class="chart-title">Net Worth Over Time</h3>
+                        <h3 class="chart-title">Stock Price Over Time</h3>
                            <!-- <canvas id="overviewNetWorthChart"></canvas> -->
-                             <div class="controls" style="margin-top: -5px;">
+                             <div class="controls" style="margin-top: -15px;">
                                 <label for="startDate">Start Date:</label>
                                 <input type="date" id="startDate" value="2025-05-20">
                             </div>
-                            <div class="chart-wrapper">
-                                <div id="overviewNetWorthChart"></div>
-                                </div>                                                      
+                          
+                                <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
+                                                                                 
+                                                                       
                     </div>                      
                     <div class="carousel-slide">
                         <h3 class="chart-title">Cash Flow</h3>
@@ -176,7 +175,7 @@
                     </div>
                
                 <button class="carousel-arrow right" onclick="nextSlide()">&#8250;</button>
-                 </div>
+            
             </div>
             <div class="three-columns">
                 <div class="market-section">
@@ -707,6 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             datasetId: datasetId,
                             showSymbol: false,
                             name: name,
+                            areaStyle: {opacity: 0.15},
                             endLabel: {
                                 show: true,
                                 formatter: function (params) {
@@ -730,7 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
 
                         const option = {
-                            animationDuration: 1000,
+                            animationDuration: 5000,
                             dataset: [
                             {
                                 id: 'dataset_raw',
@@ -754,10 +754,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             name: 'Price($USD)'
                             },
                             grid: {
-                                left: 100,     // ✅ 保证图表靠左
-                                right: 100,   // ✅ 为右侧 label 留空间
+                                left: 80,     // ✅ 保证图表靠左
+                                right: 120,   // ✅ 为右侧 label 留空间
                                 top: 30,
-                                bottom: 30
+                                bottom: 0,
+                                containLabel: true
                                 },
                             series: seriesList
                         };
