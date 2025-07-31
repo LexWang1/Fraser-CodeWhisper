@@ -52,6 +52,45 @@ app.get('/api/asset_price', async (req, res) => {
     }
 });
 
+//news api
+app.get('/topNews',(req, res) => {
+  const apiKey = 'eab9b45097fb4dc3bc4d8583d8f92476'; // API密钥
+  let baseUrl = `https://newsapi.org/v2`;
+  // 使用 fetch 发起请求
+  axios.get(`${baseUrl}/top-headlines`, {
+  params: {
+    country: 'us',
+    // category: 'technology',
+    apiKey: apiKey
+  }
+})
+  .then(response => {
+    // console.log('Top News:', response.data.articles);
+    res.send(response.data.articles);
+  })
+  .catch(error => {
+    console.error('News请求失败:', error.response?.data || error.message);
+  });
+});
+
+//实时股票数据作图用,只要传一个股票名缩写进来即可
+app.get('/stockPriceChart/:ticket',(req, res) => {
+  // 获取路由参数并保存到变量
+  let symbol = req.params.ticket;
+//   const symbol = 'TSLA'; //index use ^ at the head, stock use ticket name
+  const interval = '1d'; // 1 day     1m 1d 1mo 1y 
+  const range = '1y'; // 1 month   1m 1d 1mo 1y 
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
+  axios.get(url)   //必须用axios.get
+  .then(response => {
+    console.log('Stock Price 1year from now:', response.data.chart.result[0].indicators.quote[0]["close"]);
+    res.send(response.data.chart.result[0].indicators.quote[0]["close"]);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+});
+
 app.get('/currentStock/:ticket', (req, res) => {
   // 获取路由参数并保存到变量
   let symbol = req.params.ticket;
