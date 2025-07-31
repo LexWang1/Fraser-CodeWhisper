@@ -138,18 +138,7 @@
             <div class="carousel">
                 <button class="carousel-arrow left" onclick="prevSlide()">&#8249;</button>
                 <div class="carousel-inner" id="carouselInner">
-                    <div class="carousel-slide">
-                        <h3 class="chart-title">Stock Price Over Time</h3>
-                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
-                             <div class="controls" style="margin-top: -15px;">
-                                <label for="startDate">Start Date:</label>
-                                <input type="date" id="startDate" value="2025-05-20">
-                            </div>
-                          
-                                <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
-                                                                                 
-                                                                       
-                    </div>                      
+
                     <div class="carousel-slide">
                         <h3 class="chart-title">Cash Flow</h3>
                         <div style="display:flex;justify-content:space-around;align-items:center;">
@@ -157,14 +146,14 @@
                         <div class="donut-chart">
                             <div id="incomeChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
                             <div style="text-align: center; margin-top: -50px;">
-                                <div style="font-weight: 600; color: #666;">INCOME</div>
+                                <div style="font-weight: 600; color: #666;">Gain</div>
                                 <div style="font-size: 20px; font-weight: 700; color: #3498db;">$18,665</div>
                             </div>
                         </div>
                         <div class="donut-chart">
                             <div id="spendingChart" style="width: 400px; height: 400px;margin-top: -50px;"></div>
                             <div style="text-align: center; margin-top: -50px;">
-                                <div style="font-weight: 600; color: #666;">SPENDING</div>
+                                <div style="font-weight: 600; color: #666;">Lose</div>
                                 <div style="font-size: 20px; font-weight: 700; color: #e74c3c;">$42,500</div>
                             </div>
                         </div>
@@ -172,6 +161,19 @@
 
                         </div>
                     </div>
+
+                     <div class="carousel-slide">
+                        <h3 class="chart-title">Stock Price Over Time</h3>
+                           <!-- <canvas id="overviewNetWorthChart"></canvas> -->
+                             <div class="controls" style="margin-top: -15px;">
+                                <label for="startDate">Start Date:</label>
+                                <input type="date" id="startDate" value="2025-05-20">
+                            </div>
+                          
+                       <div id="overviewNetWorthChart" style="margin-top: -15px;"></div>
+                                                                                 
+                                                                       
+                    </div>     
                     </div>
                
                 <button class="carousel-arrow right" onclick="nextSlide()">&#8250;</button>
