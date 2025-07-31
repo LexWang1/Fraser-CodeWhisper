@@ -469,10 +469,14 @@ let assetDetailChartInstance = null;
             ).join('');
 
             const newsList = document.getElementById('news-list');
+
+
             newsList.innerHTML = asset.news.map(item =>
-                `<div class="news-item"><a href="#" class="news-title-link">${item.title}</a><div class="news-meta"><span class="news-source">${item.source}</span><span class="news-date">${item.date}</span></div></div>`
+                `<div class="news-item"><a href="${item.url}" target="_blank" rel="noopener noreferrer" class="news-title-link">${item.title}</a><div class="news-meta"><span class="news-source">${item.source}</span><span class="news-date">${item.date}</span></div></div>`
             ).join('');
             console.log("showAsset executed for", assetType, symbol);
+
+            
         }
         
         
