@@ -1,8 +1,8 @@
 {
   "portfolios": [
     {
-      "id": "default",
-      "name": "default",
+      "id": "Default",
+      "name": "Default",
       "createdAt": "2025-01-01T00:00:00Z",
       "holdings": [
         {
@@ -11,9 +11,9 @@
           "assetType": "stock",
           "quantity": 50,
           "averageCost": 240.00,
-          "currentPrice": 250.00,
+          "currentPrice": 179.27,
           "changePercent": -1.25,
-          "priceHistory": [260, 255, 258, 252, 248, 251, 250],
+          "priceHistory": [167.03, 170.78, 173.74, 173.5, 176.75, 175.51, 179.27],
           "news": [
                 { "title": "Fidelity Puritan Fund Q2 2025 Commentary", "source": "SeekingAlpha", "date": "2025-07-30 05:40:00", "url": "https://seekingalpha.com/article/4805826-fidelity-puritan-fund-q2-2025-commentary" },
                 { "title": "SCHG: A Growth ETF You Will Regret Not Buying", "source": "SeekingAlpha", "date": "2025-07-30 05:19:45", "url": "https://seekingalpha.com/article/4805797-schg-a-growth-etf-you-will-regret-not-buying" },
@@ -22,8 +22,8 @@
                 { "title": "Stock market today: Dow, S&P 500, Nasdaq slip as earnings roll in, Fed decision looms", "source": "Yahoo", "date": "2025-07-30 00:56:18", "url": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-slip-as-earnings-roll-in-fed-decision-looms-165618826.html" }
             ],
           "transactions": [
-            { "type": "buy", "price": 240.00, "quantity": 100, "timestamp": "2025-06-20T10:00:00Z" },
-            { "type": "sell", "price": 265.50, "quantity": 50, "timestamp": "2025-06-22T14:00:00Z" }
+            { "type": "buy", "price": 143.85, "quantity": 100, "timestamp": "2025-06-20T10:00:00Z" },
+            { "type": "sell", "price": 144.17, "quantity": 50, "timestamp": "2025-06-23T14:00:00Z" }
           ]
         },
         {
@@ -32,9 +32,9 @@
           "assetType": "stock",
           "quantity": 2500,
           "averageCost": 199.86,
-          "currentPrice": 245.50,
+          "currentPrice": 319.04,
           "changePercent": 0.17,
-          "priceHistory": [240, 242, 238, 245, 243, 246, 245.5],
+          "priceHistory": [332.11, 332.56, 305.3, 316.06, 325.59, 321.2,319.04],
           "news": [
                 { "title": "Apple: I Started Selling Once I Faced A Reality Check", "source": "SeekingAlpha", "date": "2025-07-30 10:30:00", "url": "https://seekingalpha.com/article/4805834-apple-stock-started-selling-once-faced-a-reality-check-downgrade-sell" },
                 { "title": "Tesla Valuation Is Built On Dreams", "source": "SeekingAlpha", "date": "2025-07-30 03:11:10", "url": "https://seekingalpha.com/article/4805766-tesla-valuation-is-built-on-dreams" },
@@ -43,11 +43,11 @@
                 { "title": "Elon Musk’s Boring Company to build Tesla tunnels under Nashville", "source": "Yahoo", "date": "2025-07-29 22:56:16", "url": "https://finance.yahoo.com/news/elon-musks-boring-company-to-build-tesla-tunnels-under-nashville-225616.html" }
             ],
           "transactions": [
-            { "type": "buy", "price": 195.80, "quantity": 3000, "timestamp": "2025-06-20T14:15:00Z" },
-            { "type": "sell", "price": 245.50, "quantity": 500, "timestamp": "2025-06-22T09:30:00Z" },
-            { "type": "buy", "price": 250.00, "quantity": 200, "timestamp": "2025-06-23T12:00:00Z" },
-            { "type": "buy", "price": 200.00, "quantity": 1000, "timestamp": "2025-06-24T12:00:00Z" },
-            { "type": "sell", "price": 231.70, "quantity": 1200, "timestamp": "2025-06-25T12:00:00Z" }
+            { "type": "buy", "price": 322.16, "quantity": 3000, "timestamp": "2025-06-20T14:15:00Z" },
+            { "type": "sell", "price": 348.68, "quantity": 500, "timestamp": "2025-06-23T09:30:00Z" },
+            { "type": "buy", "price": 323.63, "quantity": 200, "timestamp": "2025-06-27T12:00:00Z" },
+            { "type": "buy", "price": 315.65, "quantity": 1000, "timestamp": "2025-07-02T12:00:00Z" },
+            { "type": "sell", "price": 295.88, "quantity": 1200, "timestamp": "2025-07-09T12:00:00Z" }
           ]
         },
         {
@@ -56,9 +56,9 @@
           "assetType": "stock",
           "quantity": 1000,
           "averageCost": 190.00,
-          "currentPrice": 195.80,
+          "currentPrice": 61.48,
           "changePercent": 0.88,
-          "priceHistory": [190, 191, 194, 192, 195, 196, 195.8],
+          "priceHistory": [64.06, 65.13, 64.98, 64.92, 64.48, 65.06, 61.48],
           "news": [
                 { "title": "HSBC announces US$3 billion stock buy-back after 29% drop in second-quarter profit", "source": "South China Morning Post", "date": "2025-07-29", "url": "https://www.scmp.com/business/article/3320086/hsbc-plans-us3-billion-stock-buy-back-after-29-drop-second-quarter-profit" },
                 { "title": "HSBC profit slumps 29% after China charge but UK business sees 'recovery'", "source": "Yahoo", "date": "2025-07-29", "url": "https://finance.yahoo.com/news/hsbc-profit-slumps-29-after-china-charge-but-uk-business-sees-recovery-225616.html" },
@@ -67,7 +67,7 @@
                 { "title": "Fidelity Overseas Fund Q2 2025 Commentary", "source": "SeekingAlpha", "date": "2025-07-28 04:45:00", "url": "https://seekingalpha.com/article/4805367-fidelity-overseas-fund-q2-2025-commentary" }
             ],
           "transactions": [
-            { "type": "buy", "price": 190.00, "quantity": 1000, "timestamp": "2025-06-18T11:30:00Z" }
+            { "type": "buy", "price": 59.19, "quantity": 1000, "timestamp": "2025-06-18T11:30:00Z" }
           ]
         },
         {
@@ -76,9 +76,9 @@
           "assetType": "stock",
           "quantity": 200,
           "averageCost": 330.00,
-          "currentPrice": 350.10,
+          "currentPrice": 513.24,
           "changePercent": 1.05,
-          "priceHistory": [340, 345, 342, 348, 347, 349, 350.1],
+          "priceHistory": [505.27, 505.87, 510.88, 513.71, 512.5, 512.57, 513.24],
           "news": [
                 { "title": "US Equity Indexes Decline in Midday Trading", "source": "Yahoo", "date": "2025-07-30 00:47:53", "url": "https://finance.yahoo.com/news/us-equity-indexes-decline-in-midday-trading-004753.html" },
                 { "title": "Microsoft's Cloud Growth Fuels Optimism for Q4 Earnings", "source": "Yahoo", "date": "2025-07-30 00:00:42", "url": "https://finance.yahoo.com/news/microsofts-cloud-growth-fuels-optimism-for-q4-earnings-000042.html" },
@@ -87,7 +87,7 @@
                 { "title": "Microsoft's AI Investments Drive Stock Gains", "source": "The Motley Fool", "date": "2025-07-29 22:00:00", "url": "https://www.fool.com/investing/2025/07/29/microsofts-ai-investments-drive-stock-gains/" }
             ],
           "transactions": [
-            { "type": "buy", "price": 330.00, "quantity": 200, "timestamp": "2025-05-10T09:45:00Z" }
+            { "type": "buy", "price": 438.73, "quantity": 200, "timestamp": "2025-05-09T09:45:00Z" }
           ]
         },
         {
@@ -96,9 +96,9 @@
           "assetType": "stock",
           "quantity": 100,
           "averageCost": null,
-          "currentPrice": 140.22,
+          "currentPrice": 196.53,
           "changePercent": -0.50,
-          "priceHistory": [142, 141, 143, 139, 140, 141, 140.22],
+          "priceHistory": [191.34, 190.23, 192.17, 193.18, 192.58, 195.75, 196.53],
           "news": [
                 { "title": "7 Highest-Paying and Most Popular AI Jobs in 2025", "source": "Yahoo", "date": "2025-07-30 01:08:39", "url": "https://finance.yahoo.com/news/7-highest-paying-and-most-popular-ai-jobs-in-2025-010839.html" },
                 { "title": "Market-Crushing Momentum: My Top 5 AI Stocks", "source": "SeekingAlpha", "date": "2025-07-30 00:30:00", "url": "https://seekingalpha.com/article/4805812-market-crushing-momentum-my-top-5-ai-stocks" },
@@ -107,7 +107,7 @@
                 { "title": "Is Alphabet Stock a Buy Now?", "source": "The Motley Fool", "date": "2025-07-29", "url": "https://www.fool.com/investing/2025/07/29/is-alphabet-stock-a-buy-now/" }
             ],
           "transactions": [
-            { "type": "sell", "price": 145.00, "quantity": 100, "timestamp": "2025-06-15T15:00:00Z" }
+            { "type": "buy", "price": 176.77, "quantity": 100, "timestamp": "2025-06-16T15:00:00Z" }
           ]
         },
         {
@@ -116,16 +116,19 @@
           "assetType": "etf",
           "quantity": 1000,
           "averageCost": 350.00,
-          "currentPrice": 380.00,
+          "currentPrice": 634.46,
           "changePercent": 0.55,
-          "priceHistory": [375, 377, 376, 379, 381, 378, 380],
+          "priceHistory": [628.86, 634.21, 634.42, 637.1, 636.94, 635.26, 634.46],
           "news": [
                 { "title": "Reasons To Stay Bullish", "source": "SeekingAlpha", "date": "2025-07-30 05:42:09", "url": "https://seekingalpha.com/article/4805839-reasons-to-stay-bullish" },
                 { "title": "The Role Of Consumer Spending In The Business Cycle: Confirmation, Not Prediction", "source": "SeekingAlpha", "date": "2025-07-30 02:44:23", "url": "https://seekingalpha.com/article/4805778-role-of-consumer-spending-in-business-cycle" },
                 { "title": "Trade Deals And Earnings Season Help Fuel Market Highs", "source": "SeekingAlpha", "date": "2025-07-29 23:48:00", "url": "https://seekingalpha.com/article/4805712-trade-deals-and-earnings-season-help-fuel-market-highs" },
                 { "title": "Why You Should Buy The AI Bubble", "source": "SeekingAlpha", "date": "2025-07-29 23:36:10", "url": "https://seekingalpha.com/article/4805703-why-you-should-buy-the-ai-bubble" },
                 { "title": "10th Man Report: The President Is Right, Rate Cuts Won't Spur High Inflation", "source": "SeekingAlpha", "date": "2025-07-29 23:00:11", "url": "https://seekingalpha.com/article/4805689-10th-man-report-rate-cuts-wont-spur-high-inflation" }
-            ]
+            ],
+          "transactions": [
+            { "type": "buy", "price": 628.86, "quantity": 100, "timestamp": "2025-07-22T15:00:00Z" }
+          ]
         },
         {
           "stockId": "QQQ",
@@ -133,9 +136,9 @@
           "assetType": "etf",
           "quantity": 1000,
           "averageCost": 180.00,
-          "currentPrice": 200.00,
+          "currentPrice": 568.02,
           "changePercent": 0.82,
-          "priceHistory": [195, 196, 198, 197, 199, 198, 200],
+          "priceHistory": [561.25, 563.81, 565.01, 566.37, 568.14, 567.26, 568.02],
           "news": [
                 { "title": "Retire On Infrastructure Income: 2 High-Yield Funds", "source": "SeekingAlpha", "date": "2025-07-22 17:15:00", "url": "https://seekingalpha.com/article/4804589-retire-on-infrastructure-income-2-high-yield-funds" },
                 { "title": "Another 1,000-Point Level Bites The Dust", "source": "SeekingAlpha", "date": "2025-07-21 23:25:00", "url": "https://seekingalpha.com/article/4804476-another-1000-point-level-bites-the-dust" },
@@ -144,7 +147,7 @@
                 { "title": "1 No-Brainer Artificial Intelligence Index Fund to Buy Right Now for Less Than $1,000", "source": "Yahoo", "date": "2025-07-19 20:30:00", "url": "https://finance.yahoo.com/news/1-no-brainer-artificial-intelligence-index-fund-to-buy-right-now-203000.html" }
             ],
           "transactions": [
-            { "type": "buy", "price": 180.00, "quantity": 1000, "timestamp": "2025-02-20T11:00:00Z" }
+            { "type": "buy", "price": 526.83, "quantity": 1000, "timestamp": "2025-06-20T11:00:00Z" }
           ]
         },
         {
@@ -153,9 +156,9 @@
           "assetType": "etf",
           "quantity": 1000,
           "averageCost": 170.00,
-          "currentPrice": 175.00,
+          "currentPrice": 300.96,
           "changePercent": -0.11,
-          "priceHistory": [176, 175.5, 175.8, 174.9, 175.2, 175.1, 175],
+          "priceHistory": [316.1, 312.18, 310.27, 307.4, 305.41, 306.25, 300.96],
           "news": [
                 { "title": "Gold's Glow In 2025: Tactical Spark Or Strategic Signal?", "source": "SeekingAlpha", "date": "2025-07-29 21:13:00", "url": "https://seekingalpha.com/article/4805657-golds-glow-in-2025-tactical-spark-or-strategic-signal" },
                 { "title": "GLD Vs. SLV: I Like Gold Better As China Buys More", "source": "SeekingAlpha", "date": "2025-07-29 16:03:21", "url": "https://seekingalpha.com/article/4805589-gld-vs-slv-i-like-gold-better-as-china-buys-more" },
@@ -164,7 +167,7 @@
                 { "title": "Comex Deliveries Return To Normal - For Now", "source": "SeekingAlpha", "date": "2025-07-28 22:34:00", "url": "https://seekingalpha.com/article/4805398-comex-deliveries-return-to-normal-for-now" }
             ],
           "transactions": [
-            { "type": "buy", "price": 170.00, "quantity": 1000, "timestamp": "2025-03-10T14:00:00Z" }
+            { "type": "buy", "price": 306.2, "quantity": 1000, "timestamp": "2025-07-10T14:00:00Z" }
           ]
         },
         {
@@ -173,9 +176,9 @@
           "assetType": "etf",
           "quantity": 1000,
           "averageCost": 148.50,
-          "currentPrice": 150.00,
+          "currentPrice": 98.57,
           "changePercent": 0.05,
-          "priceHistory": [149.8, 149.9, 150.1, 150.0, 149.9, 150.0, 150.0],
+          "priceHistory": [98.57, 98.35, 98.29, 98.45, 98.32, 98.85, 98.57],
           "news": [
                 { "title": "Bond Yields Stabilize Ahead of Inflation Data", "source": "Wall Street Journal", "date": "2025-07-30", "url": "https://www.wsj.com/articles/bond-yields-stabilize-ahead-of-inflation-data-2025-07-30" },
                 { "title": "AGG ETF Sees Steady Inflows Amid Bond Market Optimism", "source": "Yahoo", "date": "2025-07-29", "url": "https://finance.yahoo.com/news/agg-etf-sees-steady-inflows-amid-bond-market-optimism-2025-07-29" },
@@ -184,14 +187,14 @@
                 { "title": "iShares AGG: A Safe Haven in Volatile Markets", "source": "The Motley Fool", "date": "2025-07-27", "url": "https://www.fool.com/investing/2025/07/27/ishares-agg-a-safe-haven-in-volatile-markets/" }
             ],
           "transactions": [
-            { "type": "buy", "price": 148.50, "quantity": 1000, "timestamp": "2025-04-05T09:30:00Z" }
+            { "type": "buy", "price": 98.12, "quantity": 1000, "timestamp": "2025-07-07T09:30:00Z" }
           ]
         }
       ]
     },
     {
-      "id": "newone",
-      "name": "newone",
+      "id": "Crypto",
+      "name": "Crypto",
       "createdAt": "2025-01-01T00:00:00Z",
       "holdings": [
         {
@@ -200,9 +203,9 @@
           "assetType": "forex",
           "quantity": 1000000,
           "averageCost": 0.007407,
-          "currentPrice": 0.007142,
+          "currentPrice": 0.00669,
           "changePercent": -0.25,
-          "priceHistory": [0.007246, 0.007194, 0.00722, 0.007142, 0.007092, 0.007117, 0.007142],
+          "priceHistory": [0.00682, 0.00683, 0.00680, 0.00677, 0.00673, 0.00674, 0.00669],
           "news": [
                 { "title": "Japanese Yen edges higher against a broadly retreating USD, ahead of Fed/BoJ decisions", "source": "FXStreet", "date": "2025-07-29", "url": "https://www.fxstreet.com/news/japanese-yen-edges-higher-against-a-broadly-retreating-usd-ahead-of-fed-boj-decisions-20250729" },
                 { "title": "Yen Gains as Dollar Pulls Back Ahead of Fed Decision", "source": "Trading Economics", "date": "2025-07-29", "url": "https://tradingeconomics.com/articles/yen-gains-as-dollar-pulls-back-ahead-of-fed-decision-2025-07-29" },
@@ -211,7 +214,7 @@
                 { "title": "Dollar strengthens versus yen as BOJ strikes cautious stance on rate hikes", "source": "Investing.com", "date": "2025-07-28", "url": "https://www.investing.com/news/dollar-strengthens-versus-yen-as-boj-strikes-cautious-stance-on-rate-hikes-2025-07-28" }
             ],
           "transactions": [
-            { "type": "buy", "price": 0.007407, "quantity": 1000000, "timestamp": "2025-06-01T18:00:00Z" }
+            { "type": "buy", "price": 0.00695, "quantity": 1000000, "timestamp": "2025-06-01T18:00:00Z" }
           ]
         },
         {
@@ -220,7 +223,7 @@
           "assetType": "forex",
           "quantity": 50000,
           "averageCost": 0.147058,
-          "currentPrice": 0.153846,
+          "currentPrice": 0.13890,
           "changePercent": 0.10,
           "priceHistory": [0.15267, 0.1529, 0.15337, 0.1536, 0.1531, 0.154, 0.153846],
           "news": [
@@ -231,28 +234,28 @@
                 { "title": "Yuan Rises as China's Economic Data Beats Expectations", "source": "Bloomberg", "date": "2025-07-26", "url": "https://www.bloomberg.com/news/articles/2025-07-26/yuan-rises-as-chinas-economic-data-beats-expectations" }
             ],
           "transactions": [
-            { "type": "buy", "price": 0.147058, "quantity": 50000, "timestamp": "2025-05-20T12:00:00Z" }
+            { "type": "buy", "price": 0.13847, "quantity": 50000, "timestamp": "2025-05-20T12:00:00Z" }
           ]
         },
         {
-          "stockId": "bitcoin",
-          "assetName": "bitcoin",
+          "stockId": "Bitcoin",
+          "assetName": "Bitcoin",
           "assetType": "crypto",
           "quantity": 2.5,
           "averageCost": 30800.00,
-          "currentPrice": 40000.00,
+          "currentPrice": 117833.24087995925,
           "changePercent": 4.58,
           "priceHistory": [38500, 39000, 41000, 39500, 40500, 39800, 40000],
           "news": [
-                { "title": "AML Bitcoin founder gets 7 years in prison for crypto fraud", "source": "Cointelegraph", "date": "2025-07-30 14:32:19", "url": "https://cointelegraph.com/news/aml-bitcoin-founder-gets-7-years-in-prison-for-crypto-fraud-2025-07-30" },
+                { "title": "AML Bitcoin founder gets 7 years in prison for crypto fraud", "source": "Cointelegraph", "date": "2025-07-30 14:32:19", "url": "https://cointelegraph.com/news/aml-Bitcoin-founder-gets-7-years-in-prison-for-crypto-fraud-2025-07-30" },
                 { "title": "MARA Holdings posts Q2 revenue beat with 64% year-on-year jump", "source": "Cointelegraph", "date": "2025-07-30 11:29:26", "url": "https://cointelegraph.com/news/mara-holdings-posts-q2-revenue-beat-with-64-year-on-year-jump-2025-07-30" },
-                { "title": "Bitcoin momentum loss is pre-FOMC derisking, not a trend change", "source": "Cointelegraph", "date": "2025-07-30 08:28:16", "url": "https://cointelegraph.com/news/bitcoin-momentum-loss-is-pre-fomc-derisking-not-a-trend-change-2025-07-30" },
-                { "title": "Strategy buys 21K Bitcoin with 2025’s biggest public offering", "source": "Cointelegraph", "date": "2025-07-30 08:07:54", "url": "https://cointelegraph.com/news/strategy-buys-21k-bitcoin-with-2025s-biggest-public-offering-2025-07-30" },
-                { "title": "SEC Approves In-Kind Redemptions for All Spot Bitcoin and Ethereum ETFs", "source": "CoinDesk", "date": "2025-07-30 04:58:39", "url": "https://www.coindesk.com/markets/2025/07/30/sec-approves-in-kind-redemptions-for-all-spot-bitcoin-and-ethereum-etfs/" }
+                { "title": "Bitcoin momentum loss is pre-FOMC derisking, not a trend change", "source": "Cointelegraph", "date": "2025-07-30 08:28:16", "url": "https://cointelegraph.com/news/Bitcoin-momentum-loss-is-pre-fomc-derisking-not-a-trend-change-2025-07-30" },
+                { "title": "Strategy buys 21K Bitcoin with 2025’s biggest public offering", "source": "Cointelegraph", "date": "2025-07-30 08:07:54", "url": "https://cointelegraph.com/news/strategy-buys-21k-Bitcoin-with-2025s-biggest-public-offering-2025-07-30" },
+                { "title": "SEC Approves In-Kind Redemptions for All Spot Bitcoin and Ethereum ETFs", "source": "CoinDesk", "date": "2025-07-30 04:58:39", "url": "https://www.coindesk.com/markets/2025/07/30/sec-approves-in-kind-redemptions-for-all-spot-Bitcoin-and-ethereum-etfs/" }
             ],
           "transactions": [
-            { "type": "buy", "price": 28000.00, "quantity": 1.5, "timestamp": "2025-02-02T20:00:00Z" },
-            { "type": "buy", "price": 35000.00, "quantity": 1.0, "timestamp": "2025-04-11T22:30:00Z" }
+            { "type": "buy", "price": 105710.00593822816, "quantity": 1.5, "timestamp": "2025-06-02T20:00:00Z" },
+            { "type": "buy", "price": 115879.65030112496, "quantity": 1.0, "timestamp": "2025-07-11T22:30:00Z" }
           ]
         }
       ]
