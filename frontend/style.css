@@ -33,7 +33,7 @@
 
 
     /* Layout */
-    .container {display: flex;align-items: stretch;gap: 30px;margin-top: 80px;padding: 20px;}
+    .container {display: flex;align-items: stretch;gap: 30px;margin-top: 30px;padding: 20px;}
     .left-panel {width:280px;display:flex;flex-direction:column;gap:20px;}
     .net-worth-section {background:white;padding:20px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
     .net-worth-title {font-size:14px;font-weight:600;color:#666;margin-bottom:5px;}
