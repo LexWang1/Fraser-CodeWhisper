@@ -2,6 +2,30 @@
   {
     "type": "Cash",
     "name": "EUR",
+    "date": "2025-08-01",
+    "price": 1.141
+  },
+  {
+    "type": "Cash",
+    "name": "EUR",
+    "date": "2025-07-31",
+    "price": 1.1418
+  },
+  {
+    "type": "Cash",
+    "name": "EUR",
+    "date": "2025-07-30",
+    "price": 1.1418
+  },
+  {
+    "type": "Cash",
+    "name": "EUR",
+    "date": "2025-07-29",
+    "price": 1.1549
+  },
+  {
+    "type": "Cash",
+    "name": "EUR",
     "date": "2025-07-28",
     "price": 1.1588
   },
@@ -380,6 +404,30 @@
   {
     "type": "Cash",
     "name": "GBP",
+    "date": "2025-08-01",
+    "price": 1.319
+  },
+  {
+    "type": "Cash",
+    "name": "GBP",
+    "date": "2025-07-31",
+    "price": 1.3206
+  },
+  {
+    "type": "Cash",
+    "name": "GBP",
+    "date": "2025-07-30",
+    "price": 1.3254
+  },
+  {
+    "type": "Cash",
+    "name": "GBP",
+    "date": "2025-07-29",
+    "price": 1.3353
+  },
+  {
+    "type": "Cash",
+    "name": "GBP",
     "date": "2025-07-28",
     "price": 1.3355
   },
@@ -754,6 +802,30 @@
     "name": "GBP",
     "date": "2025-05-01",
     "price": 1.3271
+  },
+  {
+    "type": "Cash",
+    "name": "JPY",
+    "date": "2025‑08‑01",
+    "price": 0.006630
+  },
+  {
+    "type": "Cash",
+    "name": "JPY",
+    "date": "2025‑07‑31",
+    "price": 0.0066356
+  },
+  {
+    "type": "Cash",
+    "name": "JPY",
+    "date": "2025‑07‑30",
+    "price": 0.0066976
+  },
+  {
+    "type": "Cash",
+    "name": "JPY",
+    "date": "2025‑07‑29",
+    "price": 0.0067357
   },
   {
     "type": "Cash",
@@ -1168,6 +1240,30 @@
     "name": "JPY",
     "date": "2025-05-01",
     "price": 0.00688
+  },
+   {
+    "type": "Crypto",
+    "name": "Bitcoin",
+    "date": "2025-08-01",
+    "price": 115700.0
+  },
+  {
+    "type": "Crypto",
+    "name": "Bitcoin",
+    "date": "2025-07-31",
+    "price": 117833.2
+  },
+  {
+    "type": "Crypto",
+    "name": "Bitcoin",
+    "date": "2025-07-30",
+    "price": 117853.3
+  },
+  {
+    "type": "Crypto",
+    "name": "Bitcoin",
+    "date": "2025-07-29",
+    "price": 118003.3
   },
   {
     "type": "Crypto",
@@ -1718,6 +1814,30 @@
   {
     "type": "Crypto",
     "name": "Dogecoin",
+    "date": "2025-08-01",
+    "price": 0.209283
+  },
+  {
+    "type": "Crypto",
+    "name": "Dogecoin",
+    "date": "2025-07-31",
+    "price": 0.209728
+  },
+  {
+    "type": "Crypto",
+    "name": "Dogecoin",
+    "date": "2025-07-30",
+    "price": 0.2199
+  },
+  {
+    "type": "Crypto",
+    "name": "Dogecoin",
+    "date": "2025-07-29",
+    "price": 0.225968
+  },
+  {
+    "type": "Crypto",
+    "name": "Dogecoin",
     "date": "2025-07-29",
     "price": 0.2251397569003692
   },
@@ -2261,6 +2381,9 @@
     "date": "2025-05-01",
     "price": 0.1724103485197474
   },
+  { "type": "Crypto", "name": "Ethereum", "date": "2025-08-01", "price": 3696.66 },
+  { "type": "Crypto", "name": "Ethereum", "date": "2025-07-31", "price": 3807.42 },
+  { "type": "Crypto", "name": "Ethereum", "date": "2025-07-30", "price": 3788.60 },
   {
     "type": "Crypto",
     "name": "Ethereum",
@@ -2810,6 +2933,24 @@
   {
     "type": "Crypto",
     "name": "Ripple",
+    "date": "2025-08-01",
+    "price": 2.9818
+  },
+  {
+    "type": "Crypto",
+    "name": "Ripple",
+    "date": "2025-07-31",
+    "price": 3.0216
+  },
+  {
+   "type": "Crypto",
+    "name": "Ripple",
+    "date": "2025-07-30",
+    "price": 3.0958
+  },
+  {
+    "type": "Crypto",
+    "name": "Ripple",
     "date": "2025-07-29",
     "price": 3.1234939366799126
   },
@@ -3353,6 +3494,30 @@
     "date": "2025-05-01",
     "price": 2.1934727928877984
   },
+   {
+    "type": "Fund",
+    "name": "AGG",
+    "date": "2025-08-01",
+    "price": 98.62
+  },
+  {
+    "type": "Fund",
+    "name": "AGG",
+    "date": "2025-07-31",
+    "price": 98.59
+  },
+  {
+    "type": "Fund",
+    "name": "AGG",
+    "date": "2025-07-30",
+    "price": 98.57
+  },
+   {
+    "type": "Fund",
+    "name": "AGG",
+    "date": "2025-07-29",
+    "price": 98.85
+  },   
   {
     "type": "Fund",
     "name": "AGG",
@@ -3712,6 +3877,24 @@
     "name": "AGG",
     "date": "2025-05-01",
     "price": 98.43
+  },
+  {
+    "type": "Fund",
+    "name": "GLD",
+    "date": "2025-08-01",
+    "price": 302.96
+  },
+  {
+    "type": "Fund",
+    "name": "GLD",
+    "date": "2025-07-29",
+    "price": 306.14
+  },
+  {
+    "type": "Fund",
+    "name": "GLD",
+    "date": "2025-07-28",
+    "price": 305.41
   },
   {
     "type": "Fund",
@@ -4076,6 +4259,36 @@
   {
     "type": "Fund",
     "name": "QQQ",
+    "date": "2025-08-01",
+    "price": 565.01
+  },
+  {
+    "type": "Fund",
+    "name": "QQQ",
+    "date": "2025-07-31",
+    "price": 565.01
+  },
+  {
+    "type": "Fund",
+    "name": "QQQ",
+    "date": "2025-07-30",
+    "price": 568.02
+  },
+  {
+    "type": "Fund",
+    "name": "QQQ",
+    "date": "2025-07-29",
+    "price": 567.26
+  },
+  {
+    "type": "Fund",
+    "name": "QQQ",
+    "date": "2025-07-28",
+    "price": 568.14
+  },
+  {
+    "type": "Fund",
+    "name": "QQQ",
     "date": "2025-07-28",
     "price": 568.14
   },
@@ -4432,6 +4645,30 @@
     "name": "QQQ",
     "date": "2025-05-01",
     "price": 481.68
+  },
+  {
+    "type": "Fund",
+    "name": "SPY",
+    "date": "2025-08-01",
+    "price": 632.08
+  },
+  {
+    "type": "Fund",
+    "name": "SPY",
+    "date": "2025-07-31",
+    "price": 632.08
+  },
+  {
+    "type": "Fund",
+    "name": "SPY",
+    "date": "2025-07-30",
+    "price": 634.46
+  },
+  {
+    "type": "Fund",
+    "name": "SPY",
+    "date": "2025-07-29",
+    "price": 635.26
   },
   {
     "type": "Fund",
@@ -4796,6 +5033,30 @@
   {
     "type": "Stock",
     "name": "GOOGL",
+    "date": "2025-08-01",
+    "price": 191.90
+  },
+  {
+    "type": "Stock",
+    "name": "GOOGL",
+    "date": "2025-07-31",
+    "price": 191.90
+  },
+  {
+    "type": "Stock",
+    "name": "GOOGL",
+    "date": "2025-07-30",
+    "price": 196.53
+  },
+  {
+    "type": "Stock",
+    "name": "GOOGL",
+    "date": "2025-07-29",
+    "price": 195.75
+  },
+  {
+    "type": "Stock",
+    "name": "GOOGL",
     "date": "2025-07-28",
     "price": 192.58
   },
@@ -5152,6 +5413,30 @@
     "name": "GOOGL",
     "date": "2025-05-01",
     "price": 161.3
+  },
+  {
+    "type": "Stock",
+    "name": "HSBC",
+    "date": "2025-08-01",
+    "price": 61.30
+  },
+  {
+    "type": "Stock",
+    "name": "HSBC",
+    "date": "2025-07-31",
+    "price": 61.30
+  },
+  {
+    "type": "Stock",
+    "name": "HSBC",
+    "date": "2025-07-30",
+    "price": 61.48
+  },
+  {
+    "type": "Stock",
+    "name": "HSBC",
+    "date": "2025-07-29",
+    "price": 65.06
   },
   {
     "type": "Stock",
@@ -5516,6 +5801,30 @@
   {
     "type": "Stock",
     "name": "MSFT",
+    "date": "2025-08-01",
+    "price": 533.50
+  },
+  {
+    "type": "Stock",
+    "name": "MSFT",
+    "date": "2025-07-31",
+    "price": 533.50
+  },
+  {
+    "type": "Stock",
+    "name": "MSFT",
+    "date": "2025-07-30",
+    "price": 513.24
+  },
+  {
+    "type": "Stock",
+    "name": "MSFT",
+    "date": "2025-07-29",
+    "price": 512.57
+  },
+  {
+    "type": "Stock",
+    "name": "MSFT",
     "date": "2025-07-28",
     "price": 512.5
   },
@@ -5872,6 +6181,30 @@
     "name": "MSFT",
     "date": "2025-05-01",
     "price": 425.4
+  },
+  {
+    "type": "Stock",
+    "name": "NVDA",
+    "date": "2025-08-01",
+    "price": 177.87
+  },
+  {
+    "type": "Stock",
+    "name": "NVDA",
+    "date": "2025-07-31",
+    "price": 177.87
+  },
+  {
+    "type": "Stock",
+    "name": "NVDA",
+    "date": "2025-07-30",
+    "price": 179.27
+  },
+  {
+    "type": "Stock",
+    "name": "NVDA",
+    "date": "2025-07-29",
+    "price": 175.51
   },
   {
     "type": "Stock",
@@ -6233,6 +6566,11 @@
     "date": "2025-05-01",
     "price": 111.61
   },
+
+  { "type": "Stock", "name": "TSLA", "date": "2025-08-01", "price": 308.27 },
+  { "type": "Stock", "name": "TSLA", "date": "2025-07-31", "price": 308.27 },
+  { "type": "Stock", "name": "TSLA", "date": "2025-07-30", "price": 319.04 },
+  { "type": "Stock", "name": "TSLA", "date": "2025-07-29", "price": 321.20 },
   {
     "type": "Stock",
     "name": "TSLA",
@@ -6592,5 +6930,88 @@
     "name": "TSLA",
     "date": "2025-05-01",
     "price": 280.52
-  }
+  },
+  {
+    "type": "Cash",
+    "name": "CNY",
+    "date": "2025-08-01",
+    "price": 0.13884
+  },
+  {
+    "type": "Cash",
+    "name": "CNY",
+    "date": "2025-07-31",
+    "price": 0.13884
+  },
+  {
+    "type": "Cash",
+    "name": "CNY",
+    "date": "2025-07-30",
+    "price": 0.13935
+  },
+
+  { "type": "Cash", "name": "CNY", "date": "2025-07-29", "price": 0.13930 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-28", "price": 0.13932 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-25", "price": 0.13950 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-24", "price": 0.13977 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-23", "price": 0.13966 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-22", "price": 0.13937 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-21", "price": 0.13934 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-18", "price": 0.13931 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-17", "price": 0.13919 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-16", "price": 0.13928 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-15", "price": 0.13941 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-14", "price": 0.13952 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-11", "price": 0.13949 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-10", "price": 0.13938 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-09", "price": 0.13927 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-08", "price": 0.13939 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-07", "price": 0.13937 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-04", "price": 0.13955 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-03", "price": 0.13947 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-02", "price": 0.13953 },
+  { "type": "Cash", "name": "CNY", "date": "2025-07-01", "price": 0.13955 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-30", "price": 0.13959 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-27", "price": 0.13941 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-26", "price": 0.13951 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-25", "price": 0.13933 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-24", "price": 0.13943 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-23", "price": 0.13926 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-20", "price": 0.13925 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-19", "price": 0.13911 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-18", "price": 0.13908 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-17", "price": 0.13916 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-16", "price": 0.13927 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-13", "price": 0.13923 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-12", "price": 0.13939 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-11", "price": 0.13901 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-10", "price": 0.13911 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-09", "price": 0.13924 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-06", "price": 0.13907 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-05", "price": 0.13932 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-04", "price": 0.13914 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-03", "price": 0.13909 },
+  { "type": "Cash", "name": "CNY", "date": "2025-06-02", "price": 0.13886 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-30", "price": 0.13886 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-29", "price": 0.13912 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-28", "price": 0.13895 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-27", "price": 0.13895 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-26", "price": 0.13910 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-23", "price": 0.13923 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-22", "price": 0.13877 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-21", "price": 0.13880 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-20", "price": 0.13847 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-19", "price": 0.13856 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-16", "price": 0.13867 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-15", "price": 0.13871 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-14", "price": 0.13868 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-13", "price": 0.13872 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-12", "price": 0.13878 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-09", "price": 0.13814 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-08", "price": 0.13819 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-07", "price": 0.13836 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-06", "price": 0.13852 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-05", "price": 0.13749 },
+  { "type": "Cash", "name": "CNY", "date": "2025-05-02", "price": 0.13747 }
+
 ]

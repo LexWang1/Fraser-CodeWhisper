@@ -205,7 +205,6 @@
                         </div>
                     </div>
 
-                    
                     </div>
                
                 <button class="carousel-arrow right" onclick="nextSlide()">&#8250;</button>
@@ -215,10 +214,10 @@
                 <div class="market-section">
                 <h3 class="chart-title">Market Movers</h3>
                 <div class="market-indices">
-                    <div class="index-card"><div class="index-change positive">0.65%</div><div>S&P 500</div></div>
-                    <div class="index-card"><div class="index-change negative">-0.72%</div><div>DOW JONES</div></div>
-                    <div class="index-card"><div class="index-change positive">0.14%</div><div>NASDAQ</div></div>
-                    <div class="index-card"><div class="index-change negative">-2.36%</div><div>10 YR BOND</div></div>
+                    <div class="index-card"><div class="index-change positive" id="GSPC">0</div><div>S&P 500</div></div>
+                    <div class="index-card"><div class="index-change negative" id="DJI">0</div><div>DOW JONES</div></div>
+                    <div class="index-card"><div class="index-change positive" id="IXIC">0</div><div>NASDAQ</div></div>
+                    <div class="index-card"><div class="index-change negative" id="TNX">0</div><div>10 YR BOND</div></div>
                 </div>
                 </div>
                 <div class="market-section">
@@ -236,15 +235,17 @@
             </div>
             <div class="bottom-section">
                 <div class="insights">
-                <h3 class="insights-title">Insights</h3>
-                <div class="insight-item">Compared to our baseline portfolio, you are underweight in International Stocks by 8.04%.</div>
-                <div class="insight-item">You are currently paying over $360.54 per year in fees for mutual funds and ETFs.</div>
-                <div class="insight-item">You are projected to pay over $19,907.22 in 20 years in management fees.</div>
+                <h3 class="insights-title">TOP NEWS</h3>
+                <!-- 动态更新news的地方 -->
+                <div class="insight-item" id="topNews1">News is Loading...</div>
+                <div class="insight-item" id="topNews2">News is Loading...</div>
+                <div class="insight-item" id="topNews3">News is Loading...</div>
+                <!-- <div class="insight-item" id="topNews4">News is Loading...</div> -->
                 </div>
                 <div class="contact-section">
                 <h3 class="contact-title">Contact Us</h3>
                 <p>Email: support@codewhisper.com</p>
-                <p>Phone: +1 (555) 123-4567</p>
+                <p>Phone: +1 (425) 132-4288</p>
                 <h4 class="subscribe-title">Subscribe to Updates</h4>
                 <input type="email" placeholder="Enter your email" class="subscribe-input">
                 <button class="subscribe-btn">Subscribe</button>
@@ -274,7 +275,7 @@
                                 <input type="date" id="detailStartDate" value="2025-05-20">
                             </div>
                             
-                         <div id="assetDetailChart"  style="width: 100%; height: 400px;"></div> 
+                         <div id="assetDetailChart"  style="width: 95%; height: 400px;"></div> 
                     </div>
                     <div class="chart-container">
                         <h3 class="chart-title">Recent Transactions</h3>
@@ -711,7 +712,7 @@ function updateAssetDetailChart(seriesData, assetName, assetTransactions = []) {
     dataset: [{ id: 'dataset_raw', source: seriesData }],
     xAxis: { type: 'category', name: 'Date', show: true },
     yAxis: { name: 'Price', show: true },
-    grid: { left: 30, right: 40, top: 40, bottom: 40 },
+    grid: { left: 50, right: 40, top: 40, bottom: 40 },//assetDetailChartInstance美化
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'cross' },
@@ -1207,6 +1208,7 @@ function initializeOverviewChart() {
 
 
 
+
             //renderDashboard(0); // Render the first portfolio by default
 
             // Initialize OVERVIEW charts (static data for now)
@@ -1373,6 +1375,87 @@ function updateSpendingChart(loseList) {
 }
 
 
+//定义股票数组对日期的转换函数
+function convertPricesToObjects(prices, type, name, market = 'US') {
+  const result = [];
+  const holidays = getHolidays(new Date().getFullYear(), market); // 获取当前年份的假期
+  let currentDate = new Date(); // 从今天开始
+ 
+  // 遍历股价数组（倒序匹配日期）
+  for (let i = 0; i < prices.length; i++) {
+    // 跳过周末和假期，直到找到一个交易日
+    while (isWeekend(currentDate) || holidays.includes(formatDate(currentDate))) {
+      currentDate.setDate(currentDate.getDate() - 1); // 往前推一天
+    }
+ 
+    // 生成对象
+    result.push({
+      type,
+      name,
+      date: formatDate(currentDate),
+      price: prices[i],
+    });
+ 
+    // 继续处理前一个交易日
+    currentDate.setDate(currentDate.getDate() - 1);
+  }
+ 
+  return result;
+}
+ 
+/**
+ * 判断是否是周末
+ * @param {Date} date
+ * @returns {boolean}
+ */
+function isWeekend(date) {
+  const day = date.getDay();
+  return day === 0 || day === 6; // 0=周日, 6=周六
+}
+ 
+/**
+ * 格式化日期为 'YYYY-MM-DD'
+ * @param {Date} date
+ * @returns {string}
+ */
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+ 
+/**
+ * 获取某年某市场的法定节假日（示例数据，需根据实际情况调整）
+ * @param {number} year
+ * @param {string} market
+ * @returns {string[]}
+ */
+function getHolidays(year, market) {
+  // 示例：美国市场假期（部分）
+  const usHolidays = [
+    `${year}-01-01`, // 元旦
+    `${year}-07-04`, // 独立日
+    `${year}-12-25`, // 圣诞节
+    // 其他假期...
+  ];
+ 
+  // 示例：中国市场假期（部分）
+  const cnHolidays = [
+    `${year}-01-01`, // 元旦
+    `${year}-05-01`, // 劳动节
+    `${year}-10-01`, // 国庆节
+    // 其他假期...
+  ];
+ 
+  return market === 'US' ? usHolidays : cnHolidays;
+}
+
+
+
+
+
+
 
 
 function updateGainSpendingLabels(gainList, loseList) {
@@ -1397,6 +1480,7 @@ function updateGainSpendingLabels(gainList, loseList) {
     }
 }
 
+
 // 7. PAGE LOAD & UTILITY FUNCTIONS
         document.addEventListener('DOMContentLoaded', () => {
             fetch('data/portfolios.json')
@@ -1411,7 +1495,61 @@ function updateGainSpendingLabels(gainList, loseList) {
                 });
         });
 
-        let interval_1;
+
+        //fetch news when initializing the page...
+        let news_url = `http://localhost:3088/topNews`;
+        fetch(news_url).then(response => {
+            if (!response.ok) {
+            throw new Error(`Stock request HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(`News:`, data);
+            //写入news到dom中
+                document.getElementById(`topNews1`).innerHTML = `
+                    <h3><a href="${data[0].url}" target="_blank">${data[0].title}</a></h3>
+                    <div style="text-align: right;">
+                    <span style="margin-right: 20px;">${data[0].source.name}</span>
+                    <span> </span>
+                    <span>${data[0].publishedAt}</span>
+                    </div>
+                    `;
+                document.getElementById(`topNews2`).innerHTML = `
+                    <h3><a href="${data[1].url}" target="_blank">${data[1].title}</a></h3>
+                    <div style="text-align: right;">
+                    <span style="margin-right: 20px;">${data[1].source.name}</span>
+                    <span> </span>
+                    <span>${data[1].publishedAt}</span>
+                    </div>
+                    `;
+                document.getElementById(`topNews3`).innerHTML = `
+                    <h3><a href="${data[2].url}" target="_blank">${data[2].title}</a></h3>
+                    <div style="text-align: right;">
+                    <span style="margin-right: 20px;">${data[2].source.name}</span>
+                    <span> </span>
+                    <span>${data[2].publishedAt}</span>
+                    </div>
+                    `;
+
+
+                // document.getElementById(`topNews4`).innerHTML = `
+                //     <h3><a href="${data[3].url}" target="_blank">${data[3].title}</a></h3>
+                //     <div style="text-align: right;">
+                //     <span style="margin-right: 20px;">${data[3].source.name}</span>
+                //     <span> </span>
+                //     <span>${data[3].publishedAt}</span>
+                //     </div>
+                //     `;
+                // document.getElementById(`topNews${i}`)
+            })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+
+        let interval_1; //定义定时对象
+
         function startCounter() {
         interval_1 = setInterval(() => { 
             if (!portfolioData) return;
@@ -1498,8 +1636,56 @@ function updateGainSpendingLabels(gainList, loseList) {
                 }
             }
             document.getElementById('total').textContent = `$${totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        
+        //update index!
+        let index_array = ["GSPC", "DJI", "IXIC", "TNX"];
+        for (const index_item of index_array){
+            console.log("requesting index object:", index_item);
+            let index_url = `http://localhost:3088/currentIndex/^${index_item}`;
+            fetch(index_url).then(response => {
+                if (!response.ok) {
+                throw new Error(`Index request HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`Index ${index_item}:`, data);
+                document.getElementById(index_item).textContent = `${data.toLocaleString( { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                // 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+
+        const stock_invest_type = ['NVDA', 'TSLA', 'HSBC', 'MSFT', 'GOOGL','SPY', 'QQQ', 'GLD', 'AGG'];
+        for(const stock_item of stock_invest_type){
+            console.log("requesting chart object:", stock_item);
+            let url = `http://localhost:3088/stockPriceChart/${stock_item}`;
+            fetch(url).then(response => {
+                if (!response.ok) {
+                throw new Error(`Index request HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(`Stock Chart ${stock_item}:`, data);
+                // transform into date json (数组转object)
+                const type = "Stock";
+                const name = stock_item;
+                const stockData = convertPricesToObjects(data, type, name, 'US'); //us market
+                console.log(stockData); //得到了object！
+                //write to json at upper folder （object写入json文件）
+                //////////////////不要写入到文件//////////////////////////////////////////使用变量传参给chart即可！-------------@todo
+
+            })
+            .catch(error => {
+                console.error('Stock Chart Fetch Error:', error);
+            });
+        }
         }, 10000); // Update every 10 second
         }
+
 
         function stopCounter() { clearInterval(interval_1);}
 
